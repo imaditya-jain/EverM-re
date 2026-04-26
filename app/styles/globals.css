@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/* =========================
+   Root Theme Variables (Light Default)
+========================= */
+:root {
+  --background: #f2f3f4;
+  --foreground: #0d2033;
+
+  --primary: #0d2033;
+  --light: #f2f3f4;
+  --white: #ffffff;
+
+  --font-sans: var(--font-pompiere);
+  --inter: var(--font-inter)
+}
+
+/* =========================
+   Dark Mode 
+========================= */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0d2033;
+    --foreground: #f2f3f4;
+
+    --primary: #ffffff;
+    --light: #0d2033;
+    --white: #0d2033;
+  }
+}
+
+/* =========================
+   Tailwind Theme Mapping
+========================= */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-primary: var(--primary);
+  --color-light: var(--light);
+  --color-white: var(--white);
+
+  --font-sans: var(--font-sans);
+}
+
+/* =========================
+   Base Styles
+========================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Pompiere", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =========================
+   Elements Reset
+========================= */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.custom-text-primary{
+  color: var(--primary);
+}
+
+.custom-bg-primary{
+  background-color: var(--primary);
+}
+
+.custom-text-light{
+  color: var(--light);
+}
+
+.custom-bg-light{
+  background-color: var(--light);
+}
+
+.pompiere{
+  font-family: "Pompiere", sans-serif !important;
+}
+
+.inter{
+  font-family: "Inter", sans-serif !important;
+}
