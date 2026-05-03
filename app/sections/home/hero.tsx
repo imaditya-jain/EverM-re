@@ -1,9 +1,13 @@
-import React from 'react'
+"use client"
+
+import { useRouter } from 'next/navigation'
 import Styles from '@/app/styles/hero.module.css'
 import { GrAppleAppStore } from 'react-icons/gr'
 import { BsGooglePlay } from 'react-icons/bs'
 
 const Hero = () => {
+  const router = useRouter()
+
   const textBase =
     'text-[#0d2033] inter font-light tracking-wide'
 
@@ -38,6 +42,7 @@ const Hero = () => {
             hover:bg-transparent hover:text-[#0d2033]
             inter
           '
+          onClick={()=> router.push('/auth/register')}
         >
           Get Started
         </button>

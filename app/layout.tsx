@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Pompiere, Inter } from "next/font/google";
-import "@/app/styles/globals.css";
+import "./styles/globals.css";
+
 
 const pompiere = Pompiere({
   weight: "400",
