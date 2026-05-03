@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Styles from '@/app/styles/hero.module.css'
 import { GrAppleAppStore } from 'react-icons/gr'
 import { BsGooglePlay } from 'react-icons/bs'
+import { Header } from '@/app/components'
 
 const Hero = () => {
   const router = useRouter()
@@ -16,9 +17,7 @@ const Hero = () => {
 
   return (
     <>
-    <header className='p-4 fixed top-0'>
-        <h1 className='text-[#0d2033] text-3xl sm:text-3xl md:text-4xl lg:text-5xl'>EverM♥re</h1>
-    </header>
+    <Header />
     <div className={`${Styles.hero} flex flex-col justify-center-safe items-center gap-8`}>
       <div>
         <p className={`text-center text-sm md:text-[18px] lg:text-2xl ${textBase}`}>

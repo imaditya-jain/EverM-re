@@ -1,0 +1,18 @@
+.root {
+  background-image: url("/images/auth-bg-mobile.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@media only screen and (min-width: 1200px) {
+  .root {
+    background-image: url("/images/auth-bg-desktop.png");
+  }
+}
+
+@media only screen and (min-width: 640px) {
+  .root {
+    background-image: url("/images/auth-bg-tablet.png");
+  }
+}
