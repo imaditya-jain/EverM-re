@@ -79,6 +79,8 @@ const userSchema = new mongoose.Schema<IUser>({
     }
 }, { timestamps: true })
 
+userSchema.index({userName: 1, email:1, phone: 1})
+
 userSchema.pre('save', async function () {
     if (!this.isModified("password")) return;
 
