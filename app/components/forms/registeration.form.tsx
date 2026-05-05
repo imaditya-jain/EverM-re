@@ -1,9 +1,10 @@
 "use client"
-
-import { useForm } from "react-hook-form"
+import { useDebounce } from "use-debounce"
+import { useForm, useWatch } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import InputField from "../fields/input.field"
+import { useEffect } from "react"
 
 
 const RegistrationForm = () => {
@@ -11,14 +12,14 @@ const RegistrationForm = () => {
     const schema = yup.object({
         firstName: yup.string().matches(/^[A-Za-z]+$/, "Only alphabets are allowed for this field").required('Firstname is required.'),
         lastName: yup.string().matches(/^[A-Za-z]+$/, "Only alphabets are allowed for this field").required('Lastname is required.'),
-        userName: yup.string().matches(/^[A-Za-z]+$/, "Only alphabets are allowed for this field").required('Username is required.'),
+        userName: yup.string() .matches(/^[A-Za-z0-9_]+$/,"Only alphabets, numbers and underscore allowed").min(3,"Username must be at least 3 characters").required("Username is required."),
         email: yup.string().email('Email is invalid.').required('Email is required.'),
         phone: yup.string().matches(/^[6-9]\d{9}$/, "Enter a valid 10-digit Indian mobile number").required("Phone number is required."),
         password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required."),
         cPassword: yup.string().oneOf([yup.ref("password")], "Passwords must match").required("Confirm Password is required."),
     })
 
-    const { register, handleSubmit, formState: { errors }, } = useForm<RegistrationFormValues>({ resolver: yupResolver(schema), })
+    const { register, handleSubmit, control, formState: { errors }, } = useForm<RegistrationFormValues>({ resolver: yupResolver(schema), mode: 'onChange' })
     type RegistrationFormValues = {
         firstName: string
         lastName: string
@@ -28,6 +29,13 @@ const RegistrationForm = () => {
         password: string
         cPassword: string
     }
+
+    const userName = useWatch({control, name:'userName'})
+
+    const [debouncedUserName] = useDebounce(userName, 500)
+
+    useEffect(()=>{},[])
+
 
     const handleOnSubmit = async () => {
         try {

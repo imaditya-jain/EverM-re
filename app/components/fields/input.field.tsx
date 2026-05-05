@@ -17,7 +17,7 @@ const InputField =<T extends FieldValues> ({ label, name, type, placeholder, req
       <input
         type={type}
         placeholder={placeholder}
-        // required={required}
+        {...register(name)}
         className={`block w-full text-[#0d2033] inter h-11.25 rounded-[10px] outline-0 border px-2 placeholder:text-[#a1a1a1] ${
           errors?.[name]
             ? "border-red-500"
