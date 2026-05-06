@@ -1,37 +1,73 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit"
 
-export interface apiResponseTypes {
-    loading: boolean;
-    success: boolean;
-    error: string
+import { userNameCheckHandler } from "../features/userNameCheck.feature"
+
+export interface ApiResponseTypes {
+  loading: boolean
+  success: boolean
+  error: string
+  hasChecked: boolean
 }
 
-const initialState: apiResponseTypes = {
-    loading: false,
-    success: false,
-    error: ""
+const initialState: ApiResponseTypes =
+{
+  loading: false,
+  success: false,
+  error: "",
+  hasChecked: false,
 }
 
-const userNameCheckSlice = createSlice({
-    name: 'username-check',
+const userNameCheckSlice =
+  createSlice({
+    name: "username",
+
     initialState,
-    reducers: {
-        setPending: (state: apiResponseTypes) => {
-            state.loading = true;
-            state.success = false;
-            state.error = ""
-        },
-        setFulfilled: (state: apiResponseTypes) => {
-            state.loading = false;
-            state.success = true;
-            state.error = ""
-        },
-        setRejected: (state: apiResponseTypes, action:PayloadAction<string>) =>{
-            state.loading = false;
-            state.success = false;
-            state.error = action.payload
-        }
-    }
-})
 
-export const {setPending, setFulfilled, setRejected} = userNameCheckSlice.actions
+    reducers: {
+      resetUserNameCheckState: (state) => {
+        state.loading = false
+        state.success = false
+        state.error = ""
+        state.hasChecked = false
+      },
+    },
+
+    extraReducers: (builder) => {
+      builder
+
+        .addCase(
+          userNameCheckHandler.pending,
+          (state) => {
+            state.loading = true
+            state.success = false
+            state.error = ""
+            state.hasChecked = false
+          }
+        )
+
+        .addCase(
+          userNameCheckHandler.fulfilled,
+          (state) => {
+            state.loading = false
+            state.success = true
+            state.error = ""
+            state.hasChecked = true
+          }
+        )
+
+        .addCase(
+          userNameCheckHandler.rejected,
+          (state, action) => {
+            state.loading = false
+            state.success = false
+            state.hasChecked = true
+            state.error =
+              action.payload ||
+              "Something went wrong."
+          }
+        )
+    },
+  })
+
+export const { resetUserNameCheckState } = userNameCheckSlice.actions
+export default userNameCheckSlice.reducer

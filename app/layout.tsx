@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Pompiere, Inter } from "next/font/google";
 import "./styles/globals.css";
+import StoreProvider from "./providers/StoreProvider";
 
 
 const pompiere = Pompiere({
@@ -26,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${pompiere.variable} ${inter.variable}  antialiased`}>
-        {children}
+        <StoreProvider>{children}</StoreProvider>
       </body>
     </html>
   );

@@ -1,18 +1,22 @@
 "use client"
+import { useEffect } from "react"
 import { useDebounce } from "use-debounce"
 import { useForm, useWatch } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import InputField from "../fields/input.field"
-import { useEffect } from "react"
+import { useAppDispatch } from "@/lib/hooks"
+import { userNameCheckHandler } from "@/lib/features/userNameCheck.feature"
+import { resetUserNameCheckState } from "@/lib/slices/username-check.slice"
 
 
 const RegistrationForm = () => {
+    const dispatch = useAppDispatch()
 
     const schema = yup.object({
         firstName: yup.string().matches(/^[A-Za-z]+$/, "Only alphabets are allowed for this field").required('Firstname is required.'),
         lastName: yup.string().matches(/^[A-Za-z]+$/, "Only alphabets are allowed for this field").required('Lastname is required.'),
-        userName: yup.string() .matches(/^[A-Za-z0-9_]+$/,"Only alphabets, numbers and underscore allowed").min(3,"Username must be at least 3 characters").required("Username is required."),
+        userName: yup.string().matches(/^[A-Za-z0-9_]+$/, "Only alphabets, numbers and underscore allowed").min(3, "Username must be at least 3 characters").required("Username is required."),
         email: yup.string().email('Email is invalid.').required('Email is required.'),
         phone: yup.string().matches(/^[6-9]\d{9}$/, "Enter a valid 10-digit Indian mobile number").required("Phone number is required."),
         password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required."),
@@ -30,12 +34,18 @@ const RegistrationForm = () => {
         cPassword: string
     }
 
-    const userName = useWatch({control, name:'userName'})
+    const userName = useWatch({ control, name: 'userName' })
 
     const [debouncedUserName] = useDebounce(userName, 500)
 
-    useEffect(()=>{},[])
+    useEffect(() => {
+        if (!debouncedUserName || debouncedUserName.length < 3) {
+            dispatch(resetUserNameCheckState())
+            return
+        }
 
+        dispatch(userNameCheckHandler(debouncedUserName.toString()))
+    }, [debouncedUserName, dispatch])
 
     const handleOnSubmit = async () => {
         try {
@@ -67,7 +77,7 @@ const RegistrationForm = () => {
             <form onSubmit={handleSubmit(handleOnSubmit)}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {
-                        fields.map(field => <InputField key={field.id} label={field?.label} name={field.name} type={field.type} placeholder={field.placeholder} required={field.required} register={register} errors={errors} />)
+                        fields.map(field => <InputField key={field.id} label={field?.label} name={field.name} type={field.type} placeholder={field.placeholder} required={field.required} register={register} errors={errors} fieldValue={field.name === "userName" ? userName : undefined} />)
                     }
                 </div>
                 <div className="mt-4">

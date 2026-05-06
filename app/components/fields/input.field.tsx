@@ -1,6 +1,7 @@
+import { useAppSelector } from "@/lib/hooks";
 import { UseFormRegister, FieldValues, Path, FieldErrors, } from "react-hook-form"
 
-interface InputFieldProps <T extends FieldValues>{
+interface InputFieldProps<T extends FieldValues> {
   label: string;
   name: Path<T>
   type: string;
@@ -8,9 +9,13 @@ interface InputFieldProps <T extends FieldValues>{
   required: boolean;
   register: UseFormRegister<T>
   errors?: FieldErrors<T>
+  fieldValue?: string
 }
 
-const InputField =<T extends FieldValues> ({ label, name, type, placeholder, required, register, errors }: InputFieldProps<T>) => {
+const InputField = <T extends FieldValues>({ label, name, type, placeholder, required, register, errors, fieldValue }: InputFieldProps<T>) => {
+  const { success, hasChecked } = useAppSelector((state) => state.userNameCheck)
+  const shouldShowUserNameStatus = name === "userName" && Boolean(fieldValue?.trim()) && hasChecked
+
   return (
     <div>
       <label className='block inter text-[#0d2033] font-semibold mb-2' htmlFor={label}>{label}</label>
@@ -18,12 +23,14 @@ const InputField =<T extends FieldValues> ({ label, name, type, placeholder, req
         type={type}
         placeholder={placeholder}
         {...register(name)}
-        className={`block w-full text-[#0d2033] inter h-11.25 rounded-[10px] outline-0 border px-2 placeholder:text-[#a1a1a1] ${
-          errors?.[name]
+        className={`block w-full text-[#0d2033] inter h-11.25 rounded-[10px] outline-0 border px-2 placeholder:text-[#a1a1a1] ${errors?.[name]
             ? "border-red-500"
             : "border-[#a1a1a1]"
-        }`}
+          }`}
       />
+      {
+        shouldShowUserNameStatus && <p className={`inter ${success ? 'text-[#0d2033]' : 'text-red-500'}`}>{success ? 'Username Available' : 'Username Taken'}</p>
+      }
       {errors?.[name] && (
         <p className="text-red-500 text-sm mt-1 inter">
           {errors[name]?.message as string}
