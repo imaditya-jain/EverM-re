@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userNameCheckReducer from './slices/username-check.slice'
+import authReducer from './slices/auth.slice'
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
-      userNameCheck: userNameCheckReducer
+      userNameCheck: userNameCheckReducer,
+      auth: authReducer
     },
   })
 }

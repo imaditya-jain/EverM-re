@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Pompiere, Inter } from "next/font/google";
 import "./styles/globals.css";
 import StoreProvider from "./providers/StoreProvider";
+import { ToastContainer } from "react-toastify";
 
 
 const pompiere = Pompiere({
@@ -27,7 +28,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${pompiere.variable} ${inter.variable}  antialiased`}>
-        <StoreProvider>{children}</StoreProvider>
+        <StoreProvider>
+          <ToastContainer />
+            {children}
+        </StoreProvider>
       </body>
     </html>
   );

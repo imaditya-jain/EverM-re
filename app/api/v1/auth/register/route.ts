@@ -45,7 +45,7 @@ export async function POST(request:NextRequest){
 
         await sendMailHelper('VERIFY_USER', data)
 
-        return NextResponse.json({success: true, message:"User created successfully."},{status: 201})
+        return NextResponse.json({success: true, message:"Registration successful. Please verify your email address."},{status: 201})
         
     } catch (error) {
         if(error instanceof Error){

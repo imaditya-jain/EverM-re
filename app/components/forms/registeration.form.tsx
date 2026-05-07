@@ -5,9 +5,11 @@ import { useForm, useWatch } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import InputField from "../fields/input.field"
-import { useAppDispatch } from "@/lib/hooks"
+import { useAppDispatch} from "@/lib/hooks"
 import { userNameCheckHandler } from "@/lib/features/userNameCheck.feature"
 import { resetUserNameCheckState } from "@/lib/slices/username-check.slice"
+import { userRegistrationHandler } from "@/lib/features/auth.feature"
+import { toast } from "react-toastify"
 
 
 const RegistrationForm = () => {
@@ -23,7 +25,7 @@ const RegistrationForm = () => {
         cPassword: yup.string().oneOf([yup.ref("password")], "Passwords must match").required("Confirm Password is required."),
     })
 
-    const { register, handleSubmit, control, formState: { errors }, } = useForm<RegistrationFormValues>({ resolver: yupResolver(schema), mode: 'onChange' })
+    const { register, handleSubmit, control, reset, formState: { errors }, } = useForm<RegistrationFormValues>({ resolver: yupResolver(schema), mode: 'onChange' })
     type RegistrationFormValues = {
         firstName: string
         lastName: string
@@ -44,14 +46,24 @@ const RegistrationForm = () => {
             return
         }
 
-        dispatch(userNameCheckHandler(debouncedUserName.toString()))
+        dispatch(userNameCheckHandler(debouncedUserName))
     }, [debouncedUserName, dispatch])
 
-    const handleOnSubmit = async () => {
+    const handleOnSubmit = async (data: RegistrationFormValues) => {
         try {
+          const response =  await dispatch(userRegistrationHandler(data)).unwrap()
 
+          const {success, error, message} = response
+
+            if (message && success) {
+                toast.success(message)
+            } else if (error && !success) {
+                toast.error(error)
+            }
         } catch (error) {
             console.log(error)
+        } finally {
+            reset()
         }
     }
 
