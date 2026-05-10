@@ -1,5 +1,9 @@
+"use client"
+
 import { useAppSelector } from "@/lib/hooks";
+import { useState } from "react";
 import { UseFormRegister, FieldValues, Path, FieldErrors, } from "react-hook-form"
+import { IoEye, IoEyeOff } from "react-icons/io5";
 
 interface InputFieldProps<T extends FieldValues> {
   label: string;
@@ -12,22 +16,56 @@ interface InputFieldProps<T extends FieldValues> {
   fieldValue?: string
 }
 
-const InputField = <T extends FieldValues>({ label, name, type, placeholder, required, register, errors, fieldValue }: InputFieldProps<T>) => {
+const InputField = <T extends FieldValues>({ label, name, type, placeholder, register, errors, fieldValue }: InputFieldProps<T>) => {
   const { success, hasChecked } = useAppSelector((state) => state.userNameCheck)
   const shouldShowUserNameStatus = name === "userName" && Boolean(fieldValue?.trim()) && hasChecked
+  const [showPassword, setShowPassword] = useState(false);
+
+  const isPasswordField =
+    name === ("password" as Path<T>) ||
+    name === ("cPassword" as Path<T>);
+
 
   return (
     <div>
       <label className='block inter text-[#0d2033] font-semibold mb-2' htmlFor={label}>{label}</label>
-      <input
-        type={type}
+      <div className="relative" style={{ position: "relative" }}>
+        <input
+          type={
+          isPasswordField
+            ? showPassword
+              ? "text"
+              : "password"
+            : type
+        }
         placeholder={placeholder}
         {...register(name)}
-        className={`block w-full text-[#0d2033] inter h-11.25 rounded-[10px] outline-0 border px-2 placeholder:text-[#a1a1a1] ${errors?.[name]
-            ? "border-red-500"
-            : "border-[#a1a1a1]"
+        className={`block w-full text-[#0d2033] inter h-11.25 rounded-[10px] outline-0 border px-2 ${isPasswordField ? "pr-10" : ""} placeholder:text-[#a1a1a1] ${errors?.[name]
+          ? "border-red-500"
+          : "border-[#a1a1a1]"
           }`}
-      />
+        />
+        {
+          name === 'password' || name === "cPassword" ? (
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="z-10 px-3 text-[#0d2033]"
+              style={{
+                position: "absolute",
+                right: "0.25rem",
+                top: "50%",
+                transform: "translateY(-50%)",
+                display: "flex",
+                alignItems: "center",
+              }}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <IoEyeOff /> : <IoEye />}
+            </button>
+          ) : null
+        }
+      </div>
       {
         shouldShowUserNameStatus && <p className={`inter ${success ? 'text-[#0d2033]' : 'text-red-500'}`}>{success ? 'Username Available' : 'Username Taken'}</p>
       }

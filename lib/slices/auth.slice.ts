@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "@/types";
-import { userRegistrationHandler, verifyUserHandler } from "../features/auth.feature";
+import { loginUserHandler, userRegistrationHandler, verifyUserHandler } from "../features/auth.feature";
 
 interface ApiResponse<T = unknown> {
     success: boolean;
@@ -62,6 +62,10 @@ export const authSlice = createSlice({
         builder.addCase(verifyUserHandler.pending, (state)=> authSlice.caseReducers.setPending(state))
         builder.addCase(verifyUserHandler.fulfilled, (state, action)=> authSlice.caseReducers.setFulfilled(state, action))
         builder.addCase(verifyUserHandler.rejected, (state, action)=> authSlice.caseReducers.setRejected(state, action))
+
+        builder.addCase(loginUserHandler.pending, (state)=> authSlice.caseReducers.setPending(state))
+        builder.addCase(loginUserHandler.fulfilled, (state, action)=> authSlice.caseReducers.setFulfilled(state, action))
+        builder.addCase(loginUserHandler.rejected, (state, action)=> authSlice.caseReducers.setRejected(state, action))
     }
 })
 

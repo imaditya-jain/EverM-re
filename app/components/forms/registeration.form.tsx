@@ -25,7 +25,6 @@ const RegistrationForm = () => {
         cPassword: yup.string().oneOf([yup.ref("password")], "Passwords must match").required("Confirm Password is required."),
     })
 
-    const { register, handleSubmit, control, reset, formState: { errors }, } = useForm<RegistrationFormValues>({ resolver: yupResolver(schema), mode: 'onChange' })
     type RegistrationFormValues = {
         firstName: string
         lastName: string
@@ -36,6 +35,8 @@ const RegistrationForm = () => {
         cPassword: string
     }
 
+    const { register, handleSubmit, control, reset, formState: { errors }, } = useForm<RegistrationFormValues>({ resolver: yupResolver(schema), mode: 'onChange' })
+    
     const userName = useWatch({ control, name: 'userName' })
 
     const [debouncedUserName] = useDebounce(userName, 500)
@@ -55,11 +56,12 @@ const RegistrationForm = () => {
 
           const {success, error, message} = response
 
-            if (message && success) {
-                toast.success(message)
-            } else if (error && !success) {
-                toast.error(error)
-            }
+          if(success && message){
+            toast.success(message)
+          }else if(!success && error ){
+            toast.error(error)
+          }
+
         } catch (error) {
             console.log(error)
         } finally {
