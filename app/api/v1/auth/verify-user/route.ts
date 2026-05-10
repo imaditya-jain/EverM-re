@@ -7,11 +7,10 @@ connectToDatabase()
 
 export const GET = async(request: NextRequest)=>{
     try {
-
-        if(request.method !== "GET") return NextResponse.json({success: false,error:"Method not allowed."},{status: 405})
-
         const searchParams = request.nextUrl.searchParams
         const token = searchParams.get('token')
+
+        if(!token) return NextResponse.json({success: false, error:"Verification token is required."},{status: 400})
 
         const user = await User.findOne({otp: token, otpExpiry:{$gt: new Date()}})
 
@@ -43,7 +42,8 @@ export const GET = async(request: NextRequest)=>{
             path: '/',
             maxAge: 24 * 60 * 60
         })
-        
+
+        return response
     } catch (error) {
         if(error instanceof Error){
             console.log(`An error occurred while verifying user: ${error.message}`)

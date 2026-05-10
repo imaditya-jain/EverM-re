@@ -10,18 +10,18 @@ interface ApiResponse {
     }
 }
 
-interface RejectError{
+interface RejectError {
     success: boolean,
     error: string
 }
 
 export const userRegistrationHandler = createAsyncThunk<ApiResponse, Record<string, unknown>, { rejectValue: RejectError }>('auth/register', async (data, { rejectWithValue }) => {
     try {
-        const response = await fetch('/api/v1/auth/register',{method:'POST', body: JSON.stringify({...data})})
+        const response = await fetch('/api/v1/auth/register', { method: 'POST', body: JSON.stringify({ ...data }) })
 
         const result: ApiResponse = await response.json()
 
-        if(!response.ok){
+        if (!response.ok) {
             return rejectWithValue({
                 success: false,
                 error: result?.error || "Something went wrong."
@@ -40,7 +40,28 @@ export const userRegistrationHandler = createAsyncThunk<ApiResponse, Record<stri
 
         return rejectWithValue({
             success: false,
-            error:'Something went wrong.'
+            error: 'Something went wrong.'
         })
+    }
+})
+
+export const verifyUserHandler = createAsyncThunk<ApiResponse, string, { rejectValue: RejectError }>('auth/verify-user', async (token, { rejectWithValue }) => {
+    try {
+        const response = await fetch(`/api/v1/auth/verify-user/?token=${token}`, { method: "GET" })
+
+        const result: ApiResponse = await response.json()
+
+        if (!response.ok) {
+            return rejectWithValue({ success: false, error: result?.error || "Something went wrong." })
+        }
+
+        return result
+
+    } catch (error) {
+        if (error instanceof Error) {
+            return rejectWithValue({ success: false, error: error.message })
+        }
+
+        return rejectWithValue({ success: false, error: "Something went wrong." })
     }
 })
