@@ -2,17 +2,20 @@ import User from "@/app/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 import crypto from 'crypto'
 import sendMailHelper from "@/app/helper/send-mail.helper";
+import connectToDatabase from "@/app/config/db.config";
+
+connectToDatabase()
 
 export async function POST (request:NextRequest){
     try {
 
         if(request.method !== "POST") return NextResponse.json({success: false, error:"Method not allowed."},{status: 405})
 
-        const {email} = await request.json()
+        const {loginId} = await request.json()
 
-        if(!email) return NextResponse.json({success: false, error:"Please provide email."},{status:400})
+        if(!loginId) return NextResponse.json({success: false, error:"Please provide email/username."},{status:400})
 
-        const isUserExist = await User.findOne({email})
+        const isUserExist = await User.findOne({$or:[{email:loginId}, {userName:loginId}]})
 
         if(!isUserExist) return NextResponse.json({success: false, error:"User not found."},{status: 404})
 

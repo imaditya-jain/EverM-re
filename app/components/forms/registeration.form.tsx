@@ -5,15 +5,18 @@ import { useForm, useWatch } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import InputField from "../fields/input.field"
-import { useAppDispatch} from "@/lib/hooks"
+import { useAppDispatch } from "@/lib/hooks"
 import { userNameCheckHandler } from "@/lib/features/userNameCheck.feature"
 import { resetUserNameCheckState } from "@/lib/slices/username-check.slice"
 import { userRegistrationHandler } from "@/lib/features/auth.feature"
+import { useRouter } from 'next/navigation';
 import { toast } from "react-toastify"
 
 
 const RegistrationForm = () => {
     const dispatch = useAppDispatch()
+    const router = useRouter()
+
 
     const schema = yup.object({
         firstName: yup.string().matches(/^[A-Za-z]+$/, "Only alphabets are allowed for this field").required('Firstname is required.'),
@@ -36,7 +39,7 @@ const RegistrationForm = () => {
     }
 
     const { register, handleSubmit, control, reset, formState: { errors }, } = useForm<RegistrationFormValues>({ resolver: yupResolver(schema), mode: 'onChange' })
-    
+
     const userName = useWatch({ control, name: 'userName' })
 
     const [debouncedUserName] = useDebounce(userName, 500)
@@ -52,15 +55,15 @@ const RegistrationForm = () => {
 
     const handleOnSubmit = async (data: RegistrationFormValues) => {
         try {
-          const response =  await dispatch(userRegistrationHandler(data)).unwrap()
+            const response = await dispatch(userRegistrationHandler(data)).unwrap()
 
-          const {success, error, message} = response
+            const { success, error, message } = response
 
-          if(success && message){
-            toast.success(message)
-          }else if(!success && error ){
-            toast.error(error)
-          }
+            if (success && message) {
+                toast.success(message)
+            } else if (!success && error) {
+                toast.error(error)
+            }
 
         } catch (error) {
             console.log(error)
@@ -89,17 +92,23 @@ const RegistrationForm = () => {
     return (
         <>
             <form onSubmit={handleSubmit(handleOnSubmit)}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {
-                        fields.map(field => <InputField key={field.id} label={field?.label} name={field.name} type={field.type} placeholder={field.placeholder} required={field.required} register={register} errors={errors} fieldValue={field.name === "userName" ? userName : undefined} />)
-                    }
-                </div>
-                <div className="mt-4">
-                    <button type="submit" className="w-full h-11.25 bg-[#0d2033] text-[#fff] text-[20px] font-semibold inter rounded-[10px]">Sign Up</button>
+                <div className="flex flex-col gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {
+                            fields.map(field => <InputField key={field.id} label={field?.label} name={field.name} type={field.type} placeholder={field.placeholder} required={field.required} register={register} errors={errors} fieldValue={field.name === "userName" ? userName : undefined} />)
+                        }
+                    </div>
+                    <div>
+                        <button type="submit" className="w-full h-11.25 bg-[#0d2033] text-[#fff] text-[20px] font-semibold inter rounded-[10px]">Sign Up</button>
+                    </div>
+                    <div>
+                        <p className='inter text-[#0d2033]/70'>Already have an account? <button type="button" onClick={() => router.push('/auth/login/')} className='text-[#0d2033]'>Log In</button></p>
+                    </div>
                 </div>
             </form>
         </>
     )
+    
 }
 
 export default RegistrationForm

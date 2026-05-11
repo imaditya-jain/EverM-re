@@ -1,5 +1,5 @@
-import Styles from '@/app/styles/auth.module.css'
 import { ReactNode } from 'react';
+import Styles from '@/app/styles/auth.module.css'
 
 interface authLayoutProps{
   title?: string;
