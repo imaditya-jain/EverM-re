@@ -34,7 +34,7 @@ export async function POST (request:NextRequest){
             verificationLink: `${baseUrl}/auth/reset-password?token=${verifyToken}`
         }
 
-        await sendMailHelper('Forgot Password', data)
+        await sendMailHelper('FORGOT_PASSWORD', data)
 
         return NextResponse.json({success: true, message:"Password reset link has been sent to your registered email."},{status: 200})
         
