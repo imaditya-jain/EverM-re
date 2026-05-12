@@ -41,7 +41,7 @@ const LoginForm = () => {
 
     const { register, reset, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(schema),
-        mode: 'onChange'
+        mode: 'onBlur'
     })
 
     const fields = [

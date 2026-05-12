@@ -39,7 +39,7 @@ const ForgotPasswordForm = () => {
         loginId: string
     }
 
-    const { register, reset, handleSubmit, formState: { errors } } = useForm<ForgotPasswordFormValues>({ resolver: yupResolver(schema), mode: "onChange" })
+    const { register, reset, handleSubmit, formState: { errors } } = useForm<ForgotPasswordFormValues>({ resolver: yupResolver(schema), mode: "onBlur" })
 
     const fields = [
         { id: 'field-1', label: 'Email or Username', name: 'loginId', type: 'text', placeholder: '', required: true }

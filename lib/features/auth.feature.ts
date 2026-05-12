@@ -66,44 +66,65 @@ export const verifyUserHandler = createAsyncThunk<ApiResponse, string, { rejectV
     }
 })
 
-export const loginUserHandler = createAsyncThunk<ApiResponse, Record<string, unknown>, {rejectValue: RejectError}>('auth/login', async(data, {rejectWithValue})=>{
-try {
-    const response = await fetch('/api/v1/auth/login', {method:'POST', body: JSON.stringify({...data})})
+export const loginUserHandler = createAsyncThunk<ApiResponse, Record<string, unknown>, { rejectValue: RejectError }>('auth/login', async (data, { rejectWithValue }) => {
+    try {
+        const response = await fetch('/api/v1/auth/login', { method: 'POST', body: JSON.stringify({ ...data }) })
 
-    const result = await response.json()
+        const result = await response.json()
 
-    if(!response.ok){
-        return rejectWithValue({success: false, error: result.error})
+        if (!response.ok) {
+            return rejectWithValue({ success: false, error: result.error })
+        }
+
+        return result
+
+    } catch (error) {
+        if (error instanceof Error) {
+            return rejectWithValue({ success: false, error: error.message })
+        } else {
+            return rejectWithValue({ success: false, error: 'Something went wrong.' })
+        }
     }
-
-    return result
-    
-} catch (error) {
-    if(error instanceof Error){
-        return rejectWithValue({success: false, error: error.message})
-    }else{
-        return rejectWithValue({success: false, error: 'Something went wrong.'})
-    }
-}
 })
 
-export const forgotPasswordHandler = createAsyncThunk<ApiResponse, Record<string, unknown>, {rejectValue: RejectError}>('auth/forgot-password', async(data,{rejectWithValue})=>{
+export const forgotPasswordHandler = createAsyncThunk<ApiResponse, Record<string, unknown>, { rejectValue: RejectError }>('auth/forgot-password', async (data, { rejectWithValue }) => {
     try {
-        const response = await fetch('/api/v1/auth/forgot-password', {method:'POST', body: JSON.stringify({...data})})
+        const response = await fetch('/api/v1/auth/forgot-password', { method: 'POST', body: JSON.stringify({ ...data }) })
+
+        const result = await response.json()
+
+        if (!response.ok) {
+            return rejectWithValue({ success: false, error: result.error })
+        }
+
+        return result
+
+    } catch (error) {
+        if (error instanceof Error) {
+            return rejectWithValue({ success: false, error: error.message })
+        }
+
+        return rejectWithValue({ success: false, error: 'Something went wrong.' })
+    }
+})
+
+export const resetPasswordHandler = createAsyncThunk<ApiResponse, Record<string, unknown>, { rejectValue: RejectError }>('auth/reset-password', async (data, { rejectWithValue }) => {
+    try {
+        const response = await fetch(`/api/v1/auth/reset-password/?token=${data.token}`, {method:"PATCH", body: JSON.stringify({password: data.password})})
 
         const result = await response.json()
 
         if(!response.ok){
-            return rejectWithValue({success: false, error: result.error})
+            return rejectWithValue({success: false, error:"Something went wrong."})
         }
 
         return result
-        
-    } catch (error) {
-        if(error instanceof Error){
-            return rejectWithValue({success: false, error: error.message})
-        }
 
-        return rejectWithValue({success: false, error:'Something wents wrong.'})
+    } catch (error) {
+        if (error instanceof Error) {
+            return rejectWithValue({ success: false, error: error.message })
+        }else{
+            return rejectWithValue({success: false, error: 'Something went wrong.'})
+        }
     }
 })
