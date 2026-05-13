@@ -23,9 +23,7 @@ export const GET = async(request: NextRequest)=>{
 
         await user.save({ validateBeforeSave: false })
 
-        const {accessToken, refreshToken} = await
-        
-        generateAccessAndRefreshToken(user._id)
+        const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id)
 
        const response =  NextResponse.json({success: true, message:"User verified." },{status:200})
 
