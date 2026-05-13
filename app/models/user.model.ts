@@ -1,8 +1,9 @@
 import bcrypt from "bcryptjs";
 import mongoose, { Document, Model } from "mongoose";
 import jwt from 'jsonwebtoken'
+import { ACCESS_TOKEN_MAX_AGE, REFRESH_TOKEN_MAX_AGE } from "../utils/auth-cookie.utils";
 
-export interface IUser extends Document{
+export interface IUser extends Document {
     firstName: string;
     lastName: string;
     userName: string;
@@ -14,6 +15,7 @@ export interface IUser extends Document{
     otpExpiry?: Date
     refreshToken?: string
     comparePassword(enteredPassword: string): Promise<boolean>;
+    compareRefreshToken(incomingToken: string): boolean;
     generateAccessToken(): string;
     generateRefreshToken(): string;
     createdAt: Date
@@ -79,7 +81,7 @@ const userSchema = new mongoose.Schema<IUser>({
     }
 }, { timestamps: true })
 
-userSchema.index({userName: 1, email:1, phone: 1})
+userSchema.index({ userName: 1, email: 1, phone: 1 })
 
 userSchema.pre('save', async function () {
     if (!this.isModified("password")) return;
@@ -91,22 +93,28 @@ userSchema.methods.comparePassword = async function (enteredPassword: string): P
     return await bcrypt.compare(enteredPassword, this.password)
 }
 
-userSchema.methods.generateAccessToken = function(){
-    if(process.env.ACCESS_TOKEN_SECRET){
-        return jwt.sign({ _id: this._id, userName: this.userName, name: `${this.firstName} ${this.lastName}`, email: this.email, phone: this.phone}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15m'})
+userSchema.methods.generateAccessToken = function () {
+    if (process.env.ACCESS_TOKEN_SECRET) {
+        return jwt.sign({ _id: this._id, userName: this.userName, name: `${this.firstName} ${this.lastName}`, email: this.email, phone: this.phone }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_MAX_AGE })
     }
 
     return "";
 }
 
-userSchema.methods.generateRefreshToken = function(){
-    if(process.env.REFRESH_TOKEN_SECRET){
-        return jwt.sign({ _id: this._id, userName: this.userName}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '7d'})
+userSchema.methods.generateRefreshToken = function () {
+    if (process.env.REFRESH_TOKEN_SECRET) {
+        return jwt.sign({ _id: this._id, userName: this.userName }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: REFRESH_TOKEN_MAX_AGE })
     }
 
     return "";
 }
 
-const User:Model<IUser> = mongoose.models.Users || mongoose.model('Users', userSchema)
+userSchema.methods.compareRefreshToken = function (incomingToken: string): boolean {
+    if (!incomingToken) return false;
+
+    return incomingToken === this.refreshToken
+}
+
+const User: Model<IUser> = mongoose.models.Users || mongoose.model('Users', userSchema)
 
 export default User

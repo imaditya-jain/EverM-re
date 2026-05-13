@@ -2,6 +2,7 @@ import User from "@/app/models/user.model";
 import generateAccessAndRefreshToken from "@/app/utils/generateAccessAndRefreshToken.utils";
 import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/app/config/db.config";
+import { setAuthCookies } from "@/app/utils/auth-cookie.utils";
 
 connectToDatabase()
 
@@ -28,20 +29,7 @@ export const GET = async(request: NextRequest)=>{
 
        const response =  NextResponse.json({success: true, message:"User verified." },{status:200})
 
-       response.cookies.set('accessToken', accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            path: '/',
-            maxAge: 900
-        })
-        response.cookies.set('refreshToken', refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            path: '/',
-            maxAge: 24 * 60 * 60
-        })
+       setAuthCookies(response, accessToken, refreshToken)
 
         return response
     } catch (error) {
