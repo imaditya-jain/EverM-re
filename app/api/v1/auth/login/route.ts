@@ -17,7 +17,7 @@ export const POST = async(request: NextRequest) =>{
 
         if(!loginId || !password) return NextResponse.json({success: false, error:"Provide all required field."},{status: 400})
 
-        const user = await User.findOne({$or:[{email: loginId},{userName: loginId}]})
+        const user = await User.findOne({$or:[{email: loginId},{userName: loginId}]}).select('-password -otp -otpExpiry -refreshToken')
 
         if(!user) return NextResponse.json({success: false, error:"User does not exist."},{status: 404})
 
@@ -27,7 +27,7 @@ export const POST = async(request: NextRequest) =>{
 
         const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id) 
 
-        const response = NextResponse.json({success: true, message:`Welcome Back ...! ${user.firstName} ${user.lastName}`},{status: 200})
+        const response = NextResponse.json({success: true, message:`Welcome Back ...! ${user.firstName} ${user.lastName}`, data:{user}},{status: 200})
 
         setAuthCookies(response, accessToken, refreshToken)
 
