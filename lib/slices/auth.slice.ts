@@ -119,7 +119,6 @@ export const authSlice = createSlice({
 
         builder.addCase(getCurrentUserHandler.pending, (state)=>{
             authSlice.caseReducers.setPending(state)
-            state.initialized = false;
         })
         builder.addCase(getCurrentUserHandler.fulfilled, (state, action)=> {
             authSlice.caseReducers.setFulfilled(state, action)
