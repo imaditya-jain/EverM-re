@@ -129,7 +129,7 @@ export const resetPasswordHandler = createAsyncThunk<ApiResponse, Record<string,
     }
 })
 
-export const getCurrentUserHandler = createAsyncThunk<ApiResponse, Record<string, unknown>, { rejectValue: RejectError }>('auth/me', async (_, { rejectWithValue }) => {
+export const getCurrentUserHandler = createAsyncThunk<ApiResponse, void, { rejectValue: RejectError }>('auth/me', async (_, { rejectWithValue }) => {
     try {
 
         const response = await fetch('/api/v1/auth/me', { method: 'GET' })
@@ -150,7 +150,7 @@ export const getCurrentUserHandler = createAsyncThunk<ApiResponse, Record<string
     }
 })
 
-export const refreshTokenHandler = createAsyncThunk<ApiResponse, Record<string, unknown>, { rejectValue: RejectError }>('auth/refresh-token', async (_, { rejectWithValue }) => {
+export const refreshTokenHandler = createAsyncThunk<ApiResponse, void, { rejectValue: RejectError }>('auth/refresh-token', async (_, { rejectWithValue }) => {
     try {
 
         const response = await fetch('/api/v1/auth/refresh-token', { method: 'POST' })
@@ -173,22 +173,51 @@ export const refreshTokenHandler = createAsyncThunk<ApiResponse, Record<string, 
 export const logoutUserHandler = createAsyncThunk<ApiResponse, Record<string, unknown>, { rejectValue: RejectError }>('auth/logout', async (_, { rejectWithValue }) => {
     try {
 
-        const response = await fetch('/api/v1/auth/logout',{method:'POST'})
+        const response = await fetch('/api/v1/auth/logout', { method: 'POST' })
 
         const result = await response.json()
 
-        if(!response.ok) return rejectWithValue({success: false, error: result?.error})
+        if (!response.ok) return rejectWithValue({ success: false, error: result?.error })
 
         return result
 
     } catch (error) {
-        
-        if(error instanceof Error){
-            return rejectWithValue({success: false, error: error.message})
-        }else{
-            return rejectWithValue({success: false, error:"Something went wrong"})
+
+        if (error instanceof Error) {
+            return rejectWithValue({ success: false, error: error.message })
+        } else {
+            return rejectWithValue({ success: false, error: "Something went wrong" })
         }
 
     }
 })
 
+export const initializeAuthSessionHandler = createAsyncThunk<
+    ApiResponse,
+    void,
+    { rejectValue: RejectError }
+>(
+    'auth/initialize-session',
+    async (_, { rejectWithValue, dispatch }) => {
+        try {
+
+            const meResult = await dispatch(
+                getCurrentUserHandler()
+            ).unwrap()
+
+            return meResult
+
+        } catch {
+            try {
+                await dispatch(refreshTokenHandler()).unwrap()
+                const meAfterRefresh = await dispatch(getCurrentUserHandler()).unwrap()
+                return meAfterRefresh
+            } catch {
+                return rejectWithValue({
+                    success: false,
+                    error: "Session not found.",
+                })
+            }
+        }
+    }
+)

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "@/types";
-import { forgotPasswordHandler, loginUserHandler, resetPasswordHandler, userRegistrationHandler, verifyUserHandler } from "../features/auth.feature";
+import { forgotPasswordHandler, getCurrentUserHandler, initializeAuthSessionHandler, loginUserHandler, logoutUserHandler, refreshTokenHandler, resetPasswordHandler, userRegistrationHandler, verifyUserHandler } from "../features/auth.feature";
 
 interface ApiResponse<T = unknown> {
     success: boolean;
@@ -33,7 +33,7 @@ const initialState: InitialStateTypes = {
     error: "",
     message: "",
     isAuthenticated: false,
-    initialized:false
+    initialized: false
 }
 
 export const authSlice = createSlice({
@@ -56,6 +56,10 @@ export const authSlice = createSlice({
             state.loading = false;
             state.message = "";
             state.error = action.payload?.error || "Something went wrong."
+        },
+        clearAuthState: (state) => {
+            state.error = ""
+            state.message = ""
         }
     },
     extraReducers: (builder) => {
@@ -64,8 +68,18 @@ export const authSlice = createSlice({
         builder.addCase(userRegistrationHandler.rejected, (state, action) => authSlice.caseReducers.setRejected(state, action))
 
         builder.addCase(verifyUserHandler.pending, (state) => authSlice.caseReducers.setPending(state))
-        builder.addCase(verifyUserHandler.fulfilled, (state, action) => authSlice.caseReducers.setFulfilled(state, action))
-        builder.addCase(verifyUserHandler.rejected, (state, action) => authSlice.caseReducers.setRejected(state, action))
+        builder.addCase(verifyUserHandler.fulfilled, (state, action) => {
+            authSlice.caseReducers.setFulfilled(state, action)
+            state.isAuthenticated = true;
+            state.initialized = true
+            state.user = action.payload?.data?.user || null
+        })
+        builder.addCase(verifyUserHandler.rejected, (state, action) =>{
+             authSlice.caseReducers.setRejected(state, action)
+             state.initialized = true;
+             state.isAuthenticated = false;
+             state.user = null
+        })
 
         builder.addCase(loginUserHandler.pending, (state) => authSlice.caseReducers.setPending(state))
         builder.addCase(loginUserHandler.fulfilled, (state, action) => {
@@ -74,7 +88,12 @@ export const authSlice = createSlice({
             state.initialized = true
             state.user = action.payload?.data?.user || null
         })
-        builder.addCase(loginUserHandler.rejected, (state, action) => authSlice.caseReducers.setRejected(state, action))
+        builder.addCase(loginUserHandler.rejected, (state, action) => {
+            authSlice.caseReducers.setRejected(state, action)
+            state.user = null;
+            state.initialized = true;
+            state.isAuthenticated = false
+        })
 
         builder.addCase(forgotPasswordHandler.pending, (state) => authSlice.caseReducers.setPending(state))
         builder.addCase(forgotPasswordHandler.fulfilled, (state, action) => authSlice.caseReducers.setFulfilled(state, action))
@@ -83,7 +102,72 @@ export const authSlice = createSlice({
         builder.addCase(resetPasswordHandler.pending, (state) => authSlice.caseReducers.setPending(state))
         builder.addCase(resetPasswordHandler.fulfilled, (state, action) => authSlice.caseReducers.setFulfilled(state, action))
         builder.addCase(resetPasswordHandler.rejected, (state, action) => authSlice.caseReducers.setRejected(state, action))
+
+        builder.addCase(logoutUserHandler.pending, (state) => authSlice.caseReducers.setPending(state))
+        builder.addCase(logoutUserHandler.fulfilled, (state, action) => {
+            authSlice.caseReducers.setFulfilled(state, action)
+            state.user = null;
+            state.initialized = true;
+            state.isAuthenticated = false
+        })
+        builder.addCase(logoutUserHandler.rejected, (state, action) => {
+            authSlice.caseReducers.setRejected(state, action)
+            state.user = null;
+            state.initialized = true;
+            state.isAuthenticated = false
+        })
+
+        builder.addCase(getCurrentUserHandler.pending, (state)=>{
+            authSlice.caseReducers.setPending(state)
+            state.initialized = false;
+        })
+        builder.addCase(getCurrentUserHandler.fulfilled, (state, action)=> {
+            authSlice.caseReducers.setFulfilled(state, action)
+            state.initialized = true;
+            state.isAuthenticated = true;
+            state.user = action?.payload?.data?.user || null;
+        })
+        builder.addCase(getCurrentUserHandler.rejected, (state, action)=>{
+            authSlice.caseReducers.setRejected(state, action);
+            state.initialized = true;
+            state.isAuthenticated = false;
+            state.user = null
+        })
+
+        builder.addCase(refreshTokenHandler.pending,(state)=> {
+            authSlice.caseReducers.setPending(state)
+            state.initialized = false;
+        })
+        builder.addCase(refreshTokenHandler.fulfilled, (state, action)=>{
+            authSlice.caseReducers.setFulfilled(state, action)
+            state.initialized = true;
+            state.isAuthenticated = true;
+        })
+        builder.addCase(refreshTokenHandler.rejected, (state, action)=>{
+            authSlice.caseReducers.setRejected(state, action)
+            state.initialized = true;
+            state.isAuthenticated = false;
+            state.user = null
+        })
+
+        builder.addCase(initializeAuthSessionHandler.pending, (state)=> {
+            authSlice.caseReducers.setPending(state);
+            state.initialized = false
+        })
+        builder.addCase(initializeAuthSessionHandler.fulfilled, (state, action)=> {
+            authSlice.caseReducers.setFulfilled(state, action);
+            state.initialized = true;
+            state.isAuthenticated = true;
+            state.user = action.payload?.data?.user || null;
+        })
+        builder.addCase(initializeAuthSessionHandler.rejected, (state, action)=> {
+            authSlice.caseReducers.setRejected(state, action);
+            state.initialized = true;
+            state.isAuthenticated = false;
+            state.user = null;
+        })
     }
 })
 
 export default authSlice.reducer
+export const {clearAuthState} = authSlice.actions
