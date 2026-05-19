@@ -3,6 +3,7 @@ import { Pompiere, Inter } from "next/font/google";
 import "./styles/globals.css";
 import StoreProvider from "./providers/StoreProvider";
 import { ToastContainer } from "react-toastify";
+import AuthSessionProvide from "./providers/auth-session-provider";
 
 
 const pompiere = Pompiere({
@@ -29,8 +30,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${pompiere.variable} ${inter.variable}  antialiased`}>
         <StoreProvider>
-          <ToastContainer />
+          <AuthSessionProvide>
+            <ToastContainer />
             {children}
+          </AuthSessionProvide>
         </StoreProvider>
       </body>
     </html>

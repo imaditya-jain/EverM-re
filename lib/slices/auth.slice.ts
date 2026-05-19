@@ -133,21 +133,9 @@ export const authSlice = createSlice({
             state.user = null
         })
 
-        builder.addCase(refreshTokenHandler.pending,(state)=> {
-            authSlice.caseReducers.setPending(state)
-            state.initialized = false;
-        })
-        builder.addCase(refreshTokenHandler.fulfilled, (state, action)=>{
-            authSlice.caseReducers.setFulfilled(state, action)
-            state.initialized = true;
-            state.isAuthenticated = true;
-        })
-        builder.addCase(refreshTokenHandler.rejected, (state, action)=>{
-            authSlice.caseReducers.setRejected(state, action)
-            state.initialized = true;
-            state.isAuthenticated = false;
-            state.user = null
-        })
+        builder.addCase(refreshTokenHandler.pending,(state)=> authSlice.caseReducers.setPending(state))
+        builder.addCase(refreshTokenHandler.fulfilled, (state, action)=>authSlice.caseReducers.setFulfilled(state, action))
+        builder.addCase(refreshTokenHandler.rejected, (state, action)=>authSlice.caseReducers.setRejected(state, action))
 
         builder.addCase(initializeAuthSessionHandler.pending, (state)=> {
             authSlice.caseReducers.setPending(state);

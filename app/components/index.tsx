@@ -1,3 +1,6 @@
+//auth
+export {default as ProtectedRoute} from './auth/protected-route'
+
 export {default as AuthLayout} from './layout/auth/layout'
 export {default as Header} from './common/header'
 

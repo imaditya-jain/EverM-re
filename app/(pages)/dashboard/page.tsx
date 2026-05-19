@@ -1,10 +1,13 @@
+import { ProtectedRoute } from '@/app/components'
 import React from 'react'
 
 const Dashboard = () => {
   return (
-    <div>
-      
-    </div>
+    <ProtectedRoute>
+      <div>
+        Dashboard
+      </div>
+    </ProtectedRoute>
   )
 }
 
