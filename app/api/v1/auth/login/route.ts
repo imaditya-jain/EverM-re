@@ -17,7 +17,7 @@ export const POST = async(request: NextRequest) =>{
 
         if(!loginId || !password) return NextResponse.json({success: false, error:"Provide all required field."},{status: 400})
 
-        const user = await User.findOne({$or:[{email: loginId},{userName: loginId}]}).select('-password -otp -otpExpiry -refreshToken')
+        const user = await User.findOne({$or:[{email: loginId},{userName: loginId}]}).select('-otp -otpExpiry -refreshToken')
 
         if(!user) return NextResponse.json({success: false, error:"User does not exist."},{status: 404})
 

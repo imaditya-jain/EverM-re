@@ -62,6 +62,7 @@ const LoginForm = () => {
 
             if (message && success) {
                 toast.success(message)
+                router.push('/dashboard')
             } else if (error && !success) {
                 toast.error(error)
             }

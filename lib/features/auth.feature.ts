@@ -17,7 +17,7 @@ interface RejectError {
 
 export const userRegistrationHandler = createAsyncThunk<ApiResponse, Record<string, unknown>, { rejectValue: RejectError }>('auth/register', async (data, { rejectWithValue }) => {
     try {
-        const response = await fetch('/api/v1/auth/register', { method: 'POST', body: JSON.stringify({ ...data }) })
+        const response = await fetch('/api/v1/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...data }) })
 
         const result: ApiResponse = await response.json()
 
@@ -68,7 +68,7 @@ export const verifyUserHandler = createAsyncThunk<ApiResponse, string, { rejectV
 
 export const loginUserHandler = createAsyncThunk<ApiResponse, Record<string, unknown>, { rejectValue: RejectError }>('auth/login', async (data, { rejectWithValue }) => {
     try {
-        const response = await fetch('/api/v1/auth/login', { method: 'POST', body: JSON.stringify({ ...data }) })
+        const response = await fetch('/api/v1/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...data }) })
 
         const result = await response.json()
 
@@ -89,7 +89,7 @@ export const loginUserHandler = createAsyncThunk<ApiResponse, Record<string, unk
 
 export const forgotPasswordHandler = createAsyncThunk<ApiResponse, Record<string, unknown>, { rejectValue: RejectError }>('auth/forgot-password', async (data, { rejectWithValue }) => {
     try {
-        const response = await fetch('/api/v1/auth/forgot-password', { method: 'POST', body: JSON.stringify({ ...data }) })
+        const response = await fetch('/api/v1/auth/forgot-password', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...data }) })
 
         const result = await response.json()
 
@@ -110,7 +110,7 @@ export const forgotPasswordHandler = createAsyncThunk<ApiResponse, Record<string
 
 export const resetPasswordHandler = createAsyncThunk<ApiResponse, Record<string, unknown>, { rejectValue: RejectError }>('auth/reset-password', async (data, { rejectWithValue }) => {
     try {
-        const response = await fetch(`/api/v1/auth/reset-password/?token=${data.token}`, { method: "PATCH", body: JSON.stringify({ password: data.password }) })
+        const response = await fetch(`/api/v1/auth/reset-password/?token=${data.token}`, { method: "PATCH", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: data.password }) })
 
         const result = await response.json()
 
@@ -136,15 +136,15 @@ export const getCurrentUserHandler = createAsyncThunk<ApiResponse, void, { rejec
 
         const result = await response.json()
 
-        if (!response.ok) rejectWithValue({ success: false, error: result?.error })
+        if (!response.ok) return rejectWithValue({ success: false, error: result?.error })
 
         return result
 
     } catch (error) {
         if (error instanceof Error) {
-            rejectWithValue({ success: false, error: error.message })
+            return rejectWithValue({ success: false, error: error.message })
         } else {
-            rejectWithValue({ success: false, error: "Something went wrong." })
+            return rejectWithValue({ success: false, error: "Something went wrong." })
         }
 
     }

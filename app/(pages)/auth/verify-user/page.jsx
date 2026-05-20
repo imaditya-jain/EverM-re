@@ -20,6 +20,7 @@ function VerifyUserContent() {
 
         if (response.success && response.message) {
           toast.success(response?.message)
+          router.push("/dashbaord")
         } else if (!response.success && response.error) {
           toast.error(response.error)
         }
