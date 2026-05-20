@@ -1,4 +1,4 @@
-import transporter from "../config/nodemailer.config";
+import transporter from "../../config/nodemailer.config";
 
 type MailType = "VERIFY_USER" | "FORGOT_PASSWORD";
 

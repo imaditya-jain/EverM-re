@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import User from "@/app/models/user.model"
 import connectToDatabase from "@/app/config/db.config"
-import sendMailHelper from "@/app/helper/send-mail.helper"
+import sendMailHelper from "@/app/helpers/mail/send-mail.helper"
 import crypto from "crypto"
 
 connectToDatabase()
