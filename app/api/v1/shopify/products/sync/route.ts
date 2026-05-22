@@ -17,13 +17,17 @@ export async function POST(request: NextRequest) {
 
         const verifiedToken = verifyAccessToken(accessToken) as { _id: string }
 
+        const {_id} = verifiedToken
+
         if (!verifiedToken) return NextResponse.json({ success: false, error: 'Unauthorized.' }, { status: 401 })
 
         const body = await request.json()
 
         const cursor = body?.cursor || null;
 
-        const store = await Store.findOne({ userId: verifiedToken._id })
+        const store = await Store.findOne({userId: _id as any})
+
+        console.log(store)
 
         if (!store) return NextResponse.json({ success: false, error: 'Store not found.' }, { status: 404 })
 
@@ -31,8 +35,8 @@ export async function POST(request: NextRequest) {
 
         for (const product of products) {
 
-            await Product.findOneAndUpdate({ store: store._id, shopifyProductId: product.id, },
-                { storeId: store._id, shopifyProductId: product.id, title: product.title, handle: product.handle, featuredImage: product?.featuredMedia.preview?.image?.url || "", seoTitle: product?.seo?.title || "", seoDescription: product?.seo?.description || "", status: product.status, updatedAtShopify: product.updatedAt, syncedAt: new Date(), }, { upsert: true, new: true, }
+            await Product.findOneAndUpdate({ storeId: store._id as any, shopifyProductId: product.id, },
+                { storeId: store._id, shopifyProductId: product.id, title: product.title, handle: product.handle, featuredImage: product?.featuredMedia?.preview?.image?.url || "", seoTitle: product?.seo?.title || "", seoDescription: product?.seo?.description || "", status: product.status, updatedAtShopify: product.updatedAt, syncedAt: new Date(), }, { upsert: true, new: true, }
             );
         }
 

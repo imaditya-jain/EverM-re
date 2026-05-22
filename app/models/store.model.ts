@@ -1,7 +1,7 @@
-import mongoose, { Document, Model } from "mongoose";
+import mongoose, { Document, Model, Types } from "mongoose";
 
 export interface IStore extends Document {
-    user: mongoose.Schema.Types.ObjectId;
+    userId: mongoose.Schema.Types.ObjectId;
     shop: string;
     accessToken: string;
     scope: string;
@@ -12,7 +12,7 @@ export interface IStore extends Document {
 }
 
 const storeSchema = new mongoose.Schema<IStore>({
-    user: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users',
         required: true,
