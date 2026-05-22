@@ -21,8 +21,6 @@ export const exchangeAccessToken = async (
 
     const data = await response.json();
 
-    console.log("SHOPIFY TOKEN RESPONSE:", data);
-
     if (!response.ok) {
         throw new Error(
             data.error_description ||

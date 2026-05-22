@@ -33,13 +33,11 @@ export async function GET(request: NextRequest) {
 
         const tokenData = await exchangeAccessToken(shop, code);
 
-        console.log(tokenData)
-
         const accessToken = tokenData.access_token;
 
         if (!accessToken) return NextResponse.json({ success: false, error: "Access token is missing" }, { status: 400 })
 
-        const store = await Store.findOneAndUpdate({ shop }, { user: user._id, shop, accessToken }, { upsert: true, new: true })
+        const store = await Store.findOneAndUpdate({ shop }, { user: user._id, shop, accessToken, scope: tokenData.scope}, { upsert: true, new: true })
 
         return NextResponse.json({ success: true, message:"Store connected successfully.", data:{store} }, { status: 200 })
 
