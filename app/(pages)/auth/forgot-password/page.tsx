@@ -4,7 +4,7 @@ import React from 'react'
 const ForgotPassword = () => {
   return (
     <>
-    <AuthLayout title='Forgot Your Password?' paragraph='No worries — it happens. Enter your email address and we’ll send you a secure link to reset your password and get back to meaningful connections.'>
+    <AuthLayout title='Forgot Your Password?' paragraph="No worries. Enter your email address and we'll send you a secure link to get back into your workspace.">
       <ForgotPasswordForm />
     </AuthLayout>
     </>

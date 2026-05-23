@@ -1,32 +1,31 @@
 @import "tailwindcss";
 
 /* =========================
-   Root Theme Variables (Light Default)
+   Root Theme Variables
 ========================= */
 :root {
-  --background: #f2f3f4;
-  --foreground: #0d2033;
+  color-scheme: light;
 
-  --primary: #0d2033;
-  --light: #f2f3f4;
+  --background: #fbfafc;
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --muted-strong: #334155;
+
+  --primary: #6d28d9;
+  --primary-light: #8b5cf6;
+  --accent: #3b82f6;
+  --success: #22c55e;
+  --warning: #f59e0b;
+
+  --surface: #ffffff;
+  --surface-soft: #f3f0ff;
+  --surface-muted: #ede9fe;
+  --border: #e2e8f0;
   --white: #ffffff;
+  --shadow-color: 109 40 217;
 
-  --font-sans: var(--font-pompiere);
-  --inter: var(--font-inter)
-}
-
-/* =========================
-   Dark Mode 
-========================= */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0d2033;
-    --foreground: #f2f3f4;
-
-    --primary: #ffffff;
-    --light: #0d2033;
-    --white: #0d2033;
-  }
+  --font-sans: var(--font-sora);
+  --inter: var(--font-inter);
 }
 
 /* =========================
@@ -37,10 +36,18 @@
   --color-foreground: var(--foreground);
 
   --color-primary: var(--primary);
-  --color-light: var(--light);
+  --color-primary-light: var(--primary-light);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-muted-strong: var(--muted-strong);
+  --color-surface: var(--surface);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
   --color-white: var(--white);
 
   --font-sans: var(--font-sans);
+  --font-inter: var(--inter);
 }
 
 /* =========================
@@ -60,7 +67,7 @@ body {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Pompiere", sans-serif;
+  font-family: var(--inter), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -78,26 +85,41 @@ button {
   font-family: inherit;
 }
 
-.custom-text-primary{
+.custom-text-primary {
   color: var(--primary);
 }
 
-.custom-bg-primary{
+.custom-bg-primary {
   background-color: var(--primary);
 }
 
-.custom-text-light{
-  color: var(--light);
+.custom-text-light {
+  color: var(--surface-soft);
 }
 
-.custom-bg-light{
-  background-color: var(--light);
+.custom-bg-light {
+  background-color: var(--surface-soft);
 }
 
-.pompiere{
-  font-family: "Pompiere", sans-serif !important;
+.custom-text-muted {
+  color: var(--muted);
 }
 
-.inter{
+.custom-bg-surface {
+  background-color: var(--surface);
+}
+
+.brand-gradient-text {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.sora {
+  font-family: "Sora", sans-serif !important;
+}
+
+.inter {
   font-family: "Inter", sans-serif !important;
 }

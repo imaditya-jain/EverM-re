@@ -2,40 +2,40 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'EverM♥re',
-    short_name: 'EverM♥re',
-    description: 'Meet new people. Make real connections.',
+    name: 'StorePilot AI',
+    short_name: 'StorePilot AI',
+    description: 'AI-powered Shopify SEO, product sync, and growth workflows.',
 
     start_url: '/',
     scope: '/',
     display: 'standalone',
     orientation: 'portrait',
 
-    background_color: '#f2f3f4',
-    theme_color: '#0d2033',
+    background_color: '#FBFAFC',
+    theme_color: '#6D28D9',
 
     icons: [
       {
-        src: '/images/favicon192.png',
+        src: '/images/favicon192.png?v=storepilot-ai',
         sizes: '192x192',
         type: 'image/png',
         purpose: 'any',
       },
       {
-        src: '/images/favicon512.png',
+        src: '/images/favicon512.png?v=storepilot-ai',
         sizes: '512x512',
         type: 'image/png',
         purpose: 'any',
       },
       {
-        src: '/images/favicon512.png',
+        src: '/images/favicon512.png?v=storepilot-ai',
         sizes: '512x512',
         type: 'image/png',
         purpose: 'maskable',
       },
     ],
 
-    categories: ['social', 'lifestyle'],
+    categories: ['business', 'productivity'],
 
     lang: 'en',
     dir: 'ltr',

@@ -83,11 +83,11 @@ const LoginForm = () => {
                         }
                     </div>
                     <div>
-                        <button type="submit" className="w-full h-11.25 bg-[#0d2033] text-[#fff] text-[20px] font-semibold inter rounded-[10px]">Sign In</button>
+                        <button type="submit" className="inter h-[45px] w-full rounded-[8px] bg-[linear-gradient(135deg,var(--primary),var(--primary-light))] text-base font-semibold text-white shadow-[0_16px_32px_rgba(109,40,217,0.22)]">Sign In</button>
                     </div>
                     <div className='flex justify-between items-center'>
-                        <p className='inter text-[#0d2033]/70'>Create an account <button type="button" onClick={() => router.push('/auth/register/')} className='text-[#0d2033]'>Sign Up</button></p>
-                        <button className='inter text-[#0d2033]' type="button" onClick={() => router.push('/auth/forgot-password/')}>Forgot Password</button>
+                        <p className='inter text-[var(--muted)]'>Create an account <button type="button" onClick={() => router.push('/auth/register/')} className='font-semibold text-[var(--primary)]'>Sign Up</button></p>
+                        <button className='inter font-semibold text-[var(--primary)]' type="button" onClick={() => router.push('/auth/forgot-password/')}>Forgot Password</button>
                     </div>
                 </div>
             </form>

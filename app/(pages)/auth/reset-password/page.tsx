@@ -3,7 +3,7 @@ import React, { Suspense } from 'react'
 
 const ResetPasswordContent = () => {
   return (
-    <AuthLayout title='Create a New Password' paragraph='Choose a strong new password to keep your account safe and continue connecting with people who match your vibe.'>
+    <AuthLayout title='Create a New Password' paragraph='Choose a strong new password to keep your Shopify growth workspace secure.'>
       <ResetPasswordForm />
     </AuthLayout>
   )

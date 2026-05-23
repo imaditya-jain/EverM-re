@@ -20,7 +20,7 @@ function VerifyUserContent() {
 
         if (response.success && response.message) {
           toast.success(response?.message)
-          router.push("/dashbaord")
+          router.push("/dashboard")
         } else if (!response.success && response.error) {
           toast.error(response.error)
         }
@@ -35,9 +35,9 @@ function VerifyUserContent() {
   }
 
   return (<>
-    <AuthLayout title='Verify Your Email' paragraph='We’ve sent a verification link to your email address. Verify your account to unlock the full EverMore experience and start making real connections.'>
+    <AuthLayout title='Verify Your Email' paragraph="We've sent a verification link to your email address. Verify your account to unlock your StorePilot AI Shopify workspace.">
       <div>
-        <button onClick={handleVerifyAccount} className="w-full h-11.25 bg-[#0d2033] text-[#fff] text-[20px] font-semibold inter rounded-[10px]">Verify Account</button>
+        <button onClick={handleVerifyAccount} className="inter h-[45px] w-full rounded-[8px] bg-[linear-gradient(135deg,var(--primary),var(--primary-light))] text-base font-semibold text-white shadow-[0_16px_32px_rgba(109,40,217,0.22)]">Verify Account</button>
       </div>
     </AuthLayout>
   </>)

@@ -4,7 +4,7 @@ import React from 'react'
 
 const Register = () => {
   return (
-    <AuthLayout title='Sign Up' paragraph='Start your journey and connect with people who truly match your vibe.'>
+    <AuthLayout title='Create Account' paragraph='Set up your workspace and start optimizing your Shopify catalog with AI.'>
      <RegistrationForm />
     </AuthLayout>
   )

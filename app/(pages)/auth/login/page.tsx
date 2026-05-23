@@ -3,7 +3,7 @@ import React from 'react'
 
 const Login = () => {
   return (
-    <AuthLayout title='Welcome Back' paragraph='Continue your journey and connect with people who truly match your vibe.'>
+    <AuthLayout title='Welcome Back' paragraph='Sign in to manage your Shopify SEO, product syncs, and AI growth workflows.'>
       <LoginForm />
     </AuthLayout>
   )

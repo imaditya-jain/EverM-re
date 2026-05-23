@@ -10,22 +10,22 @@ interface authLayoutProps{
 const AuthLayout = ({title, paragraph, children}: authLayoutProps) => {
   return (
     <>
-      <div className={`min-h-screen w-full grid grid-cols-1 lg:grid-cols-2 auto-rows-min lg:auto-rows-auto p-4 ${Styles.root}`}>
-        <div className='flex justify-center lg:items-center'>
-          <div className='w-full lg:w-[85%] flex flex-col gap-6'>
-            <p className='inter text-[#0d2033] text-sm md:text-[18px] lg:text-2xl'>Find Your Kind <br /> of Connection</p>
-            <h1 className='inter text-[#0d2033] text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl' style={{ lineHeight: 1.1 }}>Make new people.<br />Make real connections.</h1>
-            <p className='inter text-[#0d2033]/70 text-sm md:text-[18px] lg:text-2xl'>Discover meaningful conversations, genuine connections, and people who truly match your energy.</p>
+      <div className={`min-h-screen w-full grid grid-cols-1 lg:grid-cols-2 auto-rows-min lg:auto-rows-auto gap-8 p-4 sm:p-6 ${Styles.root}`}>
+        <div className='flex justify-center pt-8 lg:items-center lg:pt-0'>
+          <div className='w-full lg:w-[85%] flex flex-col gap-5'>
+            <p className='inter text-[var(--primary)] text-sm md:text-base lg:text-lg font-semibold'>AI-Powered Shopify Growth Platform</p>
+            <h1 className='sora text-[var(--foreground)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold' style={{ lineHeight: 1.08 }}>Optimize your Shopify store with AI.</h1>
+            <p className='inter text-[var(--muted)] text-base md:text-lg lg:text-xl leading-8'>Generate SEO, sync products, and monitor store performance from one focused workspace.</p>
             <div></div>
           </div>
         </div>
         <div className='flex justify-center lg:items-center'>
           <div className='w-full lg:w-[85%]'>
-            <div className='shadow bg-[#fff] rounded-4xl p-8'>
+            <div className='border border-[var(--border)] bg-[rgba(255,255,255,0.88)] rounded-[8px] p-6 shadow-[0_24px_70px_rgba(109,40,217,0.14)] backdrop-blur md:p-8'>
               <div className='flex flex-col gap-2 md:gap-3 lg:gap-4'>
-                <p className='inter text-[#0d2033]/70 text-sm md:text-[18px] lg:text-2xl tracking-wide font-medium'>EVERMORE</p>
-              <h2 className='inter text-4xl xl:text-5xl font-bold text-[#0d2033]'>{title}</h2>
-              <p className='inter text-[#0d2033]/70 text-sm md:text-[18px] lg:text-2xl'>{paragraph}</p>
+                <p className='inter text-[var(--primary)] text-sm md:text-base tracking-wide font-semibold'>STOREPILOT AI</p>
+              <h2 className='sora text-3xl xl:text-5xl font-bold text-[var(--foreground)]'>{title}</h2>
+              <p className='inter text-[var(--muted)] text-sm md:text-base lg:text-lg leading-7'>{paragraph}</p>
               <div>{children}</div>
               </div>
             </div>

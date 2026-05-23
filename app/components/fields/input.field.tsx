@@ -28,7 +28,7 @@ const InputField = <T extends FieldValues>({ label, name, type, placeholder, reg
 
   return (
     <div>
-      <label className='block inter text-[#0d2033] font-semibold mb-2' htmlFor={label}>{label}</label>
+      <label className='block inter text-[var(--muted-strong)] font-semibold mb-2' htmlFor={label}>{label}</label>
       <div className="relative" style={{ position: "relative" }}>
         <input
           type={
@@ -40,9 +40,9 @@ const InputField = <T extends FieldValues>({ label, name, type, placeholder, reg
         }
         placeholder={placeholder}
         {...register(name)}
-        className={`block w-full text-[#0d2033] inter h-11.25 rounded-[10px] outline-0 border px-2 ${isPasswordField ? "pr-10" : ""} placeholder:text-[#a1a1a1] ${errors?.[name]
+        className={`block w-full text-[var(--foreground)] inter h-[45px] rounded-[8px] outline-0 border bg-white/90 px-3 transition focus:border-[var(--primary)] focus:shadow-[0_0_0_3px_rgba(109,40,217,0.12)] ${isPasswordField ? "pr-10" : ""} placeholder:text-[#94a3b8] ${errors?.[name]
           ? "border-red-500"
-          : "border-[#a1a1a1]"
+          : "border-[var(--border)]"
           }`}
         />
         {
@@ -50,7 +50,7 @@ const InputField = <T extends FieldValues>({ label, name, type, placeholder, reg
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="z-10 px-3 text-[#0d2033]"
+              className="z-10 px-3 text-[var(--muted-strong)]"
               style={{
                 position: "absolute",
                 right: "0.25rem",
@@ -67,7 +67,7 @@ const InputField = <T extends FieldValues>({ label, name, type, placeholder, reg
         }
       </div>
       {
-        shouldShowUserNameStatus && <p className={`inter ${success ? 'text-[#0d2033]' : 'text-red-500'}`}>{success ? 'Username Available' : 'Username Taken'}</p>
+        shouldShowUserNameStatus && <p className={`inter ${success ? 'text-[var(--success)]' : 'text-red-500'}`}>{success ? 'Username Available' : 'Username Taken'}</p>
       }
       {errors?.[name] && (
         <p className="text-red-500 text-sm mt-1 inter">

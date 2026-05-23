@@ -72,7 +72,7 @@ const ForgotPasswordForm = () => {
                     fields.map((field) => <InputField<ForgotPasswordFormValues> key={field.id} label={field.label} name={field.name} type={field.type} placeholder={field.placeholder} register={register} errors={errors} required={field.required} />)
                 }
                 <div className="mt-4">
-                    <button type="submit" className="w-full h-11.25 bg-[#0d2033] text-[#fff] text-[20px] font-semibold inter rounded-[10px]">Reset Password</button>
+                    <button type="submit" className="inter h-[45px] w-full rounded-[8px] bg-[linear-gradient(135deg,var(--primary),var(--primary-light))] text-base font-semibold text-white shadow-[0_16px_32px_rgba(109,40,217,0.22)]">Reset Password</button>
                 </div>
             </form>
         </>

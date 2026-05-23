@@ -1,7 +1,9 @@
 const Header = () => {
   return (
-    <header className='p-4 fixed top-0'>
-        <h1 className='text-[#0d2033] text-3xl sm:text-3xl md:text-4xl lg:text-5xl'>EverM♥re</h1>
+    <header className="fixed top-0 left-0 z-20 w-full px-5 py-4 sm:px-8">
+      <h1 className="sora text-2xl font-bold tracking-[0px] text-[var(--foreground)] sm:text-3xl">
+        StorePilot AI
+      </h1>
     </header>
   )
 }

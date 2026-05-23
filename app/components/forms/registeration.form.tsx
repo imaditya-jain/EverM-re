@@ -99,10 +99,10 @@ const RegistrationForm = () => {
                         }
                     </div>
                     <div>
-                        <button type="submit" className="w-full h-11.25 bg-[#0d2033] text-[#fff] text-[20px] font-semibold inter rounded-[10px]">Sign Up</button>
+                        <button type="submit" className="inter h-[45px] w-full rounded-[8px] bg-[linear-gradient(135deg,var(--primary),var(--primary-light))] text-base font-semibold text-white shadow-[0_16px_32px_rgba(109,40,217,0.22)]">Sign Up</button>
                     </div>
                     <div>
-                        <p className='inter text-[#0d2033]/70'>Already have an account? <button type="button" onClick={() => router.push('/auth/login/')} className='text-[#0d2033]'>Log In</button></p>
+                        <p className='inter text-[var(--muted)]'>Already have an account? <button type="button" onClick={() => router.push('/auth/login/')} className='font-semibold text-[var(--primary)]'>Log In</button></p>
                     </div>
                 </div>
             </form>
