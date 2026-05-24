@@ -17,8 +17,11 @@ import {
 } from "lucide-react";
 import { SiShopify } from "react-icons/si";
 import { toast } from "react-toastify";
-import { authFetch } from "@/app/lib/auth-fetch";
 import { cn } from "@/app/lib/utils";
+import { authFetch } from "@/app/lib/auth-fetch";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { getProductsHandler, generateSeoHandler, saveProductSeoHandler } from "@/lib/features/product.feature";
+import { syncProductsHandler } from "@/lib/features/store.feature";
 
 type ProductItem = {
   id: string;
@@ -83,31 +86,6 @@ const formatRelative = (value?: string | null) => {
   if (hours < 24) return `${hours} hr ago`;
   return formatDate(value);
 };
-
-function DashboardHeader({ shop }: { shop?: string }) {
-  return (
-    <header className="hidden h-[72px] items-center justify-end border-b border-border bg-white px-9 md:flex">
-      <div className="flex items-center gap-7">
-        <button className="flex h-[44px] min-w-[266px] items-center justify-between gap-4 rounded-[8px] border border-border bg-white px-4 text-[13px] font-semibold text-foreground shadow-sm">
-          <span className="flex min-w-0 items-center gap-3">
-            <span className="flex h-6 w-6 items-center justify-center rounded-[8px] bg-[#ecf8ed] text-[15px] text-[#65b84c]">
-              <SiShopify />
-            </span>
-            <span className="truncate">{shop || "No store connected"}</span>
-          </span>
-          <ChevronDown size={16} className="text-muted-strong" />
-        </button>
-
-        <button className="relative flex h-[44px] w-[44px] items-center justify-center rounded-full border border-border bg-white text-foreground shadow-sm">
-          <Bell size={19} />
-          <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[11px] font-bold text-white">
-            3
-          </span>
-        </button>
-      </div>
-    </header>
-  );
-}
 
 function MetricCard({
   title,
@@ -314,8 +292,6 @@ export default function ProductsView() {
 
   return (
     <div className="min-h-full bg-background">
-      <DashboardHeader shop={data?.store.shop} />
-
       <main className="mx-auto max-w-[1120px] px-4 py-7 sm:px-7 lg:px-9">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div>

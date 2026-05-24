@@ -17,8 +17,9 @@ import {
 } from "lucide-react";
 import { SiShopify } from "react-icons/si";
 import { toast } from "react-toastify";
-import { authFetch } from "@/app/lib/auth-fetch";
 import { cn } from "@/app/lib/utils";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { getProductDetailHandler, generateSeoHandler, saveProductSeoHandler } from "@/lib/features/product.feature";
 
 type ProductDetail = {
   id: string;
@@ -56,37 +57,6 @@ const formatDateTime = (value?: string | null) => {
   }).format(new Date(value));
 };
 
-function DashboardHeader({ shop, productTitle }: { shop?: string; productTitle?: string }) {
-  return (
-    <header className="hidden h-[72px] items-center justify-between border-b border-border bg-white px-9 md:flex">
-      <div className="flex min-w-0 items-center gap-3 text-[13px] font-medium text-muted">
-        <Link href="/dashboard/products" className="hover:text-primary">Products</Link>
-        <ChevronDown size={13} className="-rotate-90" />
-        <span className="truncate font-semibold text-foreground">{productTitle || "Product"}</span>
-      </div>
-
-      <div className="flex items-center gap-7">
-        <button className="flex h-[44px] min-w-[266px] items-center justify-between gap-4 rounded-[8px] border border-border bg-white px-4 text-[13px] font-semibold text-foreground shadow-sm">
-          <span className="flex min-w-0 items-center gap-3">
-            <span className="flex h-6 w-6 items-center justify-center rounded-[8px] bg-[#ecf8ed] text-[15px] text-[#65b84c]">
-              <SiShopify />
-            </span>
-            <span className="truncate">{shop || "No store connected"}</span>
-          </span>
-          <ChevronDown size={16} className="text-muted-strong" />
-        </button>
-
-        <button className="relative flex h-[44px] w-[44px] items-center justify-center rounded-full border border-border bg-white text-foreground shadow-sm">
-          <Bell size={19} />
-          <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[11px] font-bold text-white">
-            3
-          </span>
-        </button>
-      </div>
-    </header>
-  );
-}
-
 function StatusBadge({ status }: { status: string }) {
   return (
     <span className="inline-flex h-6 items-center rounded-[6px] bg-[#e8fff0] px-2 text-[11px] font-bold text-success">
@@ -98,10 +68,12 @@ function StatusBadge({ status }: { status: string }) {
 export default function ProductDetailView() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const [data, setData] = useState<ProductDetailResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [generating, setGenerating] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const { productDetailData: data, loadingDetail: loading, generatingSeoId, savingSeo: saving } = useAppSelector((state) => state.product);
+  
+  const generating = generatingSeoId === (data?.product?.id || 'detail');
+
   const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">("mobile");
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
@@ -110,27 +82,14 @@ export default function ProductDetailView() {
 
   const loadProduct = useCallback(async () => {
     try {
-      setLoading(true);
-      const response = await authFetch(`/api/v1/shopify/products/${params.id}`, {
-        cache: "no-store",
-      });
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        toast.error(result.error || "Unable to load product.");
-        return;
-      }
-
-      setData(result.data);
+      const result = await dispatch(getProductDetailHandler(params.id as string)).unwrap();
       setSeoTitle(result.data.product.seoTitle || result.data.product.title);
       setSeoDescription(result.data.product.seoDescription || result.data.product.description || "");
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      toast.error("Unable to load product.");
-    } finally {
-      setLoading(false);
+      toast.error(error.error || "Unable to load product.");
     }
-  }, [params.id]);
+  }, [dispatch, params.id]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -149,30 +108,18 @@ export default function ProductDetailView() {
     if (!product) return;
 
     try {
-      setGenerating(true);
-      const response = await authFetch("/api/v1/ai/generate-seo", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: product.title,
-          description: product.description || seoDescription || product.title,
-        }),
-      });
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        toast.error(result.error || "Unable to generate SEO.");
-        return;
-      }
+      const result = await dispatch(generateSeoHandler({
+        title: product.title,
+        description: product.description || seoDescription || product.title,
+        productId: product.id
+      })).unwrap();
 
       setSeoTitle(result.data.response.seoTitle || product.title);
       setSeoDescription(result.data.response.metaDescription || "");
       toast.success(result.message || "SEO generated successfully.");
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      toast.error("Unable to generate SEO.");
-    } finally {
-      setGenerating(false);
+      toast.error(error.error || "Unable to generate SEO.");
     }
   };
 
@@ -180,33 +127,23 @@ export default function ProductDetailView() {
     if (!product) return;
 
     try {
-      setSaving(true);
-      const response = await authFetch(`/api/v1/shopify/products/${product.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ seoTitle, seoDescription }),
-      });
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        toast.error(result.error || "Unable to save SEO.");
-        return;
-      }
+      const result = await dispatch(saveProductSeoHandler({
+        id: product.id,
+        seoTitle,
+        seoDescription
+      })).unwrap();
 
       toast.success(result.message || "SEO saved successfully.");
       await loadProduct();
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      toast.error("Unable to save SEO.");
-    } finally {
-      setSaving(false);
+      toast.error(error.error || "Unable to save SEO.");
     }
   };
 
   if (loading) {
     return (
       <div className="min-h-full bg-background">
-        <DashboardHeader />
         <main className="mx-auto max-w-[1120px] px-4 py-7 sm:px-7 lg:px-9">
           <div className="h-8 w-72 animate-pulse rounded-[8px] bg-surface-muted" />
           <div className={cn(cardClass, "mt-7 h-[520px] animate-pulse")} />
@@ -218,7 +155,6 @@ export default function ProductDetailView() {
   if (!product) {
     return (
       <div className="min-h-full bg-background">
-        <DashboardHeader />
         <main className="mx-auto max-w-[1120px] px-4 py-7 sm:px-7 lg:px-9">
           <section className={cn(cardClass, "p-6")}>
             <h1 className="sora text-[24px] font-bold text-foreground">Product not found</h1>
@@ -233,8 +169,6 @@ export default function ProductDetailView() {
 
   return (
     <div className="min-h-full bg-background">
-      <DashboardHeader shop={data?.store.shop} productTitle={product.title} />
-
       <main className="mx-auto max-w-[1120px] px-4 py-7 sm:px-7 lg:px-9">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div>

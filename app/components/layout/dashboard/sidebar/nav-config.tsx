@@ -1,7 +1,7 @@
 import {
   LayoutDashboard,
   Package,
-  Sparkles,
+  // Sparkles,
   Settings,
   Store,
   LucideIcon,
@@ -31,12 +31,6 @@ export const NAV_SECTIONS: NavSection[] = [
         label: "Products",
         href: "/dashboard/products",
         icon: Package,
-      },
-      {
-        label: "AI SEO",
-        href: "/dashboard/ai-seo",
-        icon: Sparkles,
-        badge: 18,
       },
     ],
   },

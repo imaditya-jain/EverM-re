@@ -3,6 +3,7 @@ import { SidebarProvider } from "@/app/components/layout/dashboard/sidebar/sideb
 import { Sidebar } from "@/app/components/layout/dashboard/sidebar/index";
 import { MobileDrawer } from "@/app/components/layout/dashboard/sidebar/mobile-drawer";
 import { MobileTopbar } from "@/app/components/layout/dashboard/sidebar/mobile-topbar";
+import { Topbar } from "@/app/components/layout/dashboard/topbar";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -16,6 +17,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <MobileDrawer />
         <div className="flex flex-1 flex-col min-w-0 overflow-hidden">
           <MobileTopbar />
+          <Topbar />
           <main className="flex-1 overflow-y-auto">
             {children}
           </main>
