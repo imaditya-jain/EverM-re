@@ -37,9 +37,9 @@ export async function GET(request: NextRequest) {
 
         if (!accessToken) return NextResponse.json({ success: false, error: "Access token is missing" }, { status: 400 })
 
-        const store = await Store.findOneAndUpdate({ shop }, { userId: user._id, shop, accessToken, scope: tokenData.scope}, { upsert: true, new: true })
+        await Store.findOneAndUpdate({ shop }, { userId: user._id, shop, accessToken, scope: tokenData.scope, isActive: true, connectedAt: new Date() }, { upsert: true, new: true })
 
-        return NextResponse.json({ success: true, message:"Store connected successfully.", data:{store} }, { status: 200 })
+        return NextResponse.redirect(new URL('/dashboard/store?connected=1', request.url))
 
     } catch (error) {
         if (error instanceof Error) {

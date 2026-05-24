@@ -1,18 +1,14 @@
 import { ai } from "@/app/lib/ai";
-import { verifyAccessToken } from "@/app/utils/auth-token.utils";
+import { getUserIdFromAccessToken, unauthorizedResponse } from "@/app/utils/auth-request.utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
     try {
         if (request.method !== "POST") return NextResponse.json({ success: false, error: "Method not allowed." }, { status: 405 })
 
-        const accessToken = request.cookies.get('accessToken')?.value
+        const userId = getUserIdFromAccessToken(request)
 
-        if (!accessToken) return NextResponse.json({ success: false, error: "Unauthorized." }, { status: 401 })
-
-        const verifiedToken = verifyAccessToken(accessToken)
-
-        if (!verifiedToken) return NextResponse.json({ success: false, error: "Unauthorized." }, { status: 401 })
+        if (!userId) return unauthorizedResponse()
 
         const body = await request.json()
 
@@ -87,6 +83,10 @@ Generate optimized Shopify SEO.
         return NextResponse.json({ success: true, data: { response: parsedResponse }, message: "SEO Title and Description generated successfully." }, { status: 200 })
 
     } catch (error) {
+        if (error instanceof Error && ["JsonWebTokenError", "TokenExpiredError", "NotBeforeError"].includes(error.name)) {
+            return unauthorizedResponse()
+        }
+
         if (error instanceof Error) {
             console.log(`An unknown error occurred while generating seo: ${error.message}`)
         } else {

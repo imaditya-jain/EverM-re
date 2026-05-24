@@ -1,10 +1,12 @@
-import mongoose, { Document, Model } from 'mongoose'
+import mongoose, { Document, Model, Types } from 'mongoose'
 
 export interface IProduct extends Document{
-    storeId: mongoose.Schema.Types.ObjectId;
+    _id: Types.ObjectId;
+    storeId: Types.ObjectId;
     shopifyProductId: string;
     title: string;
     handle: string;
+    description: string;
     featuredImage: string;
     seoTitle: string;
     seoDescription: string;
@@ -33,6 +35,10 @@ const productSchema = new mongoose.Schema<IProduct>({
         type: String,
         required: true
     },
+    description:{
+        type: String,
+        default: ""
+    },
     featuredImage:{
         type: String,
         required: true
@@ -51,11 +57,11 @@ const productSchema = new mongoose.Schema<IProduct>({
     },
     syncAt:{
         type: Date,
-        default: Date.now()
+        default: Date.now
     },
     updatedAtShopify:{
         type: Date,
-        default: Date.now()
+        default: Date.now
     },
 },{timestamps: true})
 

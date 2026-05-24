@@ -5,6 +5,7 @@ query GetProducts($cursor: String) {
       id
       title
       handle
+      description
       featuredMedia {
         preview {
           image {

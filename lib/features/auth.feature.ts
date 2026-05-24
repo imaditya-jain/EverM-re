@@ -1,4 +1,5 @@
 import { User } from "@/types";
+import { authFetch } from "@/app/lib/auth-fetch";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 interface ApiResponse {
@@ -132,7 +133,7 @@ export const resetPasswordHandler = createAsyncThunk<ApiResponse, Record<string,
 export const getCurrentUserHandler = createAsyncThunk<ApiResponse, void, { rejectValue: RejectError }>('auth/me', async (_, { rejectWithValue }) => {
     try {
 
-        const response = await fetch('/api/v1/auth/me', { method: 'GET' })
+        const response = await authFetch('/api/v1/auth/me', { method: 'GET' })
 
         const result = await response.json()
 

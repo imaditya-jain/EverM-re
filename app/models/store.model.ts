@@ -1,7 +1,8 @@
 import mongoose, { Document, Model, Types } from "mongoose";
 
 export interface IStore extends Document {
-    userId: mongoose.Schema.Types.ObjectId;
+    _id: Types.ObjectId;
+    userId: Types.ObjectId;
     shop: string;
     accessToken: string;
     scope: string;
@@ -35,7 +36,7 @@ const storeSchema = new mongoose.Schema<IStore>({
     },
     connectedAt:{
         type: Date,
-        default: Date.now()
+        default: Date.now
     }
 },{timestamps: true})
 
