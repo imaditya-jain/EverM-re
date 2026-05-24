@@ -11,7 +11,6 @@ const logoutAndRedirect = async () => {
   try {
     await fetch("/api/v1/auth/logout", { method: "POST" });
   } catch {
-    // Redirecting to login is still the right fallback if logout cannot finish.
   }
 
   if (typeof window !== "undefined" && window.location.pathname !== "/auth/login") {

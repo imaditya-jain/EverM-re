@@ -19,7 +19,7 @@ import { SiShopify } from "react-icons/si";
 import { toast } from "react-toastify";
 import { cn } from "@/app/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { getProductDetailHandler, generateSeoHandler, saveProductSeoHandler } from "@/lib/features/product.feature";
+import { getProductDetailHandler, generateSeoHandler, saveProductSeoHandler, syncProductSeoHandler } from "@/lib/features/product.feature";
 
 type ProductDetail = {
   id: string;
@@ -70,7 +70,7 @@ export default function ProductDetailView() {
   const router = useRouter();
 
   const dispatch = useAppDispatch();
-  const { productDetailData: data, loadingDetail: loading, generatingSeoId, savingSeo: saving } = useAppSelector((state) => state.product);
+  const { productDetailData: data, loadingDetail: loading, generatingSeoId, savingSeo: saving, syncingSeo } = useAppSelector((state) => state.product);
   
   const generating = generatingSeoId === (data?.product?.id || 'detail');
 
@@ -138,6 +138,28 @@ export default function ProductDetailView() {
     } catch (error: any) {
       console.log(error);
       toast.error(error.error || "Unable to save SEO.");
+    }
+  };
+
+  const handleSyncSeo = async () => {
+    if (!product) return;
+
+    try {
+      // First save locally to make sure it's up to date
+      await dispatch(saveProductSeoHandler({
+        id: product.id,
+        seoTitle,
+        seoDescription
+      })).unwrap();
+
+      // Then sync to shopify
+      const result = await dispatch(syncProductSeoHandler(product.id)).unwrap();
+      
+      toast.success(result.message || "SEO synced to Shopify successfully.");
+      await loadProduct();
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.error || "Unable to sync SEO to Shopify.");
     }
   };
 
@@ -274,14 +296,18 @@ export default function ProductDetailView() {
               <span>Click &quot;Generate AI SEO&quot; to get AI-optimized title and description.</span>
             </div>
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-[110px_1fr]">
-              <button onClick={() => { setSeoTitle(product.seoTitle || product.title); setSeoDescription(product.seoDescription || product.description || ""); }} className="flex h-[42px] min-w-0 items-center justify-center gap-2 rounded-[8px] border border-border bg-white px-3 text-[13px] font-bold text-muted-strong hover:bg-surface-soft">
+            <div className="mt-5 flex flex-wrap gap-3">
+              <button onClick={() => { setSeoTitle(product.seoTitle || product.title); setSeoDescription(product.seoDescription || product.description || ""); }} className="flex flex-1 h-[42px] min-w-[110px] items-center justify-center gap-2 rounded-[8px] border border-border bg-white px-3 text-[13px] font-bold text-muted-strong hover:bg-surface-soft">
                 <RefreshCcw size={15} className="shrink-0" />
                 <span className="min-w-0 truncate">Reset</span>
               </button>
-              <button onClick={handleSaveSeo} disabled={saving} className="flex h-[42px] min-w-0 items-center justify-center gap-2 rounded-[8px] bg-[linear-gradient(135deg,var(--primary),var(--primary-light))] px-3 text-[13px] font-bold text-white shadow-[0_14px_28px_rgba(109,40,217,0.24)] disabled:opacity-70">
+              <button onClick={handleSaveSeo} disabled={saving} className="flex flex-1 h-[42px] min-w-[120px] items-center justify-center gap-2 rounded-[8px] border border-border bg-white px-3 text-[13px] font-bold text-muted-strong hover:bg-surface-soft disabled:opacity-70">
                 <Save size={15} className="shrink-0" />
-                <span className="min-w-0 truncate">{saving ? "Saving" : "Save SEO"}</span>
+                <span className="min-w-0 truncate">{saving ? "Saving" : "Save Draft"}</span>
+              </button>
+              <button onClick={handleSyncSeo} disabled={syncingSeo || saving} className="flex flex-1 h-[42px] min-w-[160px] items-center justify-center gap-2 rounded-[8px] bg-[linear-gradient(135deg,var(--primary),var(--primary-light))] px-3 text-[13px] font-bold text-white shadow-[0_14px_28px_rgba(109,40,217,0.24)] disabled:opacity-70">
+                <SiShopify size={15} className="shrink-0" />
+                <span className="min-w-0 truncate">{syncingSeo ? "Syncing..." : "Save & Sync to Shopify"}</span>
               </button>
             </div>
           </section>

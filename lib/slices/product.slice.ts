@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { generateSeoHandler, getProductDetailHandler, getProductsHandler, saveProductSeoHandler } from "../features/product.feature";
+import { generateSeoHandler, getProductDetailHandler, getProductsHandler, saveProductSeoHandler, syncProductSeoHandler } from "../features/product.feature";
 
 interface ApiResponse<T = any> {
     success: boolean;
@@ -21,6 +21,7 @@ interface InitialStateTypes {
     loadingDetail: boolean;
     generatingSeoId: string | null;
     savingSeo: boolean;
+    syncingSeo: boolean;
     error: string;
     message: string;
 }
@@ -32,6 +33,7 @@ const initialState: InitialStateTypes = {
     loadingDetail: true,
     generatingSeoId: null,
     savingSeo: false,
+    syncingSeo: false,
     error: "",
     message: ""
 };
@@ -111,6 +113,19 @@ export const productSlice = createSlice({
         });
         builder.addCase(saveProductSeoHandler.rejected, (state, action) => {
             state.savingSeo = false;
+            productSlice.caseReducers.setRejected(state, action);
+        });
+
+        builder.addCase(syncProductSeoHandler.pending, (state) => {
+            state.syncingSeo = true;
+            productSlice.caseReducers.setPending(state);
+        });
+        builder.addCase(syncProductSeoHandler.fulfilled, (state, action) => {
+            state.syncingSeo = false;
+            productSlice.caseReducers.setFulfilled(state, action);
+        });
+        builder.addCase(syncProductSeoHandler.rejected, (state, action) => {
+            state.syncingSeo = false;
             productSlice.caseReducers.setRejected(state, action);
         });
     }

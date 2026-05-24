@@ -98,3 +98,23 @@ export const saveProductSeoHandler = createAsyncThunk<ApiResponse, { id: string;
         return rejectWithValue({ success: false, error: "Something went wrong." });
     }
 });
+
+export const syncProductSeoHandler = createAsyncThunk<ApiResponse, string, { rejectValue: RejectError }>('product/syncSeo', async (id, { rejectWithValue }) => {
+    try {
+        const response = await authFetch(`/api/v1/shopify/products/${id}/seo`, {
+            method: 'POST'
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            return rejectWithValue({ success: false, error: result?.error || "Unable to sync SEO." });
+        }
+
+        return result;
+    } catch (error) {
+        if (error instanceof Error) {
+            return rejectWithValue({ success: false, error: error.message });
+        }
+        return rejectWithValue({ success: false, error: "Something went wrong." });
+    }
+});
