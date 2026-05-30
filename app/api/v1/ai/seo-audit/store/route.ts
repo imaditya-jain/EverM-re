@@ -20,11 +20,9 @@ export async function GET(request: NextRequest) {
             )
         }
 
-        const  userId = verifyAccessToken(accessToken) as { userId: string }
-    console.log(userId)
-        const user = await User.findById(userId)
+        const userId = verifyAccessToken(accessToken) as { userId: string }
+        const user = await User.findById(userId).select('-otp -otpExpiry -password -refreshToken')
 
-        console.log(user)
 
         if (!user) {
             return NextResponse.json(
@@ -52,7 +50,7 @@ export async function GET(request: NextRequest) {
         while (hasMore) {
             const skip = (page - 1) * limit;
 
-            const products = await Product.find({$and:[{storeId: store?._id}]})
+            const products = await Product.find({ storeId: store?._id })
                 .skip(skip)
                 .limit(limit)
                 .lean() as IProduct[];
@@ -72,7 +70,7 @@ export async function GET(request: NextRequest) {
                             handle: product?.handle
                         });
 
-                       await SeoAudits.findOneAndUpdate({$and:[{storeId:store._id},{productId: product._id}]},{ storeId: store._id, productId: product._id, seoScore: audit?.scores?.overall, titleScore: audit?.scores?.title, descriptionScore: audit?.scores?.description, handleScore: audit?.scores?.handle, issues: audit?.issues, recommendations: audit?.recommendations, strengths: audit?.strengths, priority: audit?.priority, auditStatus: audit?.status })
+                        await SeoAudits.findOneAndUpdate({ $and: [{ storeId: store._id }, { productId: product._id }] }, { storeId: store._id, productId: product._id, seoScore: audit?.scores?.overall, titleScore: audit?.scores?.title, descriptionScore: audit?.scores?.description, handleScore: audit?.scores?.handle, issues: audit?.issues, recommendations: audit?.recommendations, strengths: audit?.strengths, priority: audit?.priority, auditStatus: audit?.status }, { new: true, upsert: true })
 
                         return { success: true, productId: product._id, audit };
                     } catch (error) {

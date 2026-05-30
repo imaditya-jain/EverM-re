@@ -51,12 +51,19 @@ const seoAuditSchema = new mongoose.Schema<ISeoAudit>({
     },
     issues: [
         {
-            type: String
+            field: { type: String },
+            issue: { type: String },
+            severity: {
+                type: String,
+                enum: ['High', 'Medium', 'Low'],
+            },
         }
     ],
     recommendations: [
         {
-            type: String
+            field: { type: String },
+            suggestion: { type: String },
+            impact: { type: String },
         }
     ],
     strengths: [

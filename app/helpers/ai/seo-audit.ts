@@ -18,7 +18,7 @@ export const generateSeoAudit = async ({ title, seoTitle, seoDescription, handle
     issues: {
         field: string;
         issue: string;
-        severity: 'low' | 'medium' | 'high';
+        severity: 'Low' | 'Medium' | 'High';
     }[],
     recommendations: {
         field: string;
@@ -29,9 +29,6 @@ export const generateSeoAudit = async ({ title, seoTitle, seoDescription, handle
     priority: 'High' | 'Medium' | 'Low';
 }> => {
     try {
-        // if (!title || !seoTitle || !seoDescription || !handle) {
-        //     throw new Error('Provide all required fields.')
-        // }
 
         const completion = await ai.chat.completions.create({
             model: 'openai/gpt-3.5-turbo',
@@ -55,7 +52,7 @@ export const generateSeoAudit = async ({ title, seoTitle, seoDescription, handle
                             {
                                 "field": "seoTitle",
                                 "issue": "Title too short",
-                                "severity": "medium"
+                                "severity": "Medium"
                             }
                         ],
                         "recommendations": [
@@ -157,7 +154,7 @@ export const generateSeoAudit = async ({ title, seoTitle, seoDescription, handle
             issues: [{
                 field: 'system',
                 issue: 'Failed to generate audit report',
-                severity: 'high'
+                severity: 'High'
             }],
             recommendations: [{
                 field: 'system',
