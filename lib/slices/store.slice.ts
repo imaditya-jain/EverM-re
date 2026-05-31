@@ -16,6 +16,7 @@ interface RejectError {
 interface StoreStatus {
     connected: boolean;
     store?: {
+        id: string;
         shop: string;
         connectedAt: string;
         totalProducts: number;

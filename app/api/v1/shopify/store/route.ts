@@ -35,6 +35,7 @@ export async function GET(request: NextRequest) {
         data: {
           connected: true,
           store: {
+            id: String(store._id),
             shop: store.shop,
             connectedAt: store.connectedAt,
             totalProducts,

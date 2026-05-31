@@ -3,6 +3,7 @@ import userNameCheckReducer from './slices/username-check.slice'
 import authReducer from './slices/auth.slice'
 import storeReducer from './slices/store.slice'
 import productReducer from './slices/product.slice'
+import dashboardReducer from './slices/dashboard.slice'
 
 export const makeStore = () => {
   return configureStore({
@@ -10,7 +11,8 @@ export const makeStore = () => {
       userNameCheck: userNameCheckReducer,
       auth: authReducer,
       store: storeReducer,
-      product: productReducer
+      product: productReducer,
+      dashboard: dashboardReducer
     },
   })
 }

@@ -14,16 +14,16 @@ export async function GET(request: NextRequest) {
 
         const userId = getUserIdFromAccessToken(request)
 
-        if (!userId) return unauthorizedResponse()
+        if (userId == null) return unauthorizedResponse()
 
-        const user = await User.findById(userId).select('-otp -password -otpExxpiry -refreshToken')
+        const user = await User.findById(userId).select('-otp -password -otpExpiry -refreshToken')
 
-        if (!user) return NextResponse.json({ success: false, error: "Unauthorized. User not found." }, { status: 401 })
+        if (user == null) return NextResponse.json({ success: false, error: "Unauthorized. User not found." }, { status: 401 })
 
         const searchParams = request.nextUrl.searchParams
         const storeId = searchParams.get('storeId')
 
-        if (!storeId) return NextResponse.json({ success: false, error: 'Store id is required.' }, { status: 400 })
+        if (storeId == null) return NextResponse.json({ success: false, error: 'Store id is required.' }, { status: 400 })
 
         if (!mongoose.Types.ObjectId.isValid(storeId)) {
             return NextResponse.json({ success: false, error: "Invalid storeId format" }, { status: 400 });
