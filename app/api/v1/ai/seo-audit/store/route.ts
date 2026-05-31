@@ -3,26 +3,19 @@ import Product, { IProduct } from "@/app/models/product.model";
 import SeoAudits from "@/app/models/seo-audit.model";
 import Store from "@/app/models/store.model";
 import User from "@/app/models/user.model";
-import { verifyAccessToken } from "@/app/utils/auth-token.utils";
 import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/app/config/db.config";
+import { getUserIdFromAccessToken, unauthorizedResponse } from "@/app/utils/auth-request.utils";
 
 connectToDatabase()
 
 export async function GET(request: NextRequest) {
     try {
-        const accessToken = request.cookies.get('accessToken')?.value
+        const userId = getUserIdFromAccessToken(request)
 
-        if (!accessToken) {
-            return NextResponse.json(
-                { success: false, error: "Unauthorized. Access token is missing." },
-                { status: 401 }
-            )
-        }
+        if(!userId) return unauthorizedResponse()
 
-        const userId = verifyAccessToken(accessToken) as { userId: string }
         const user = await User.findById(userId).select('-otp -otpExpiry -password -refreshToken')
-
 
         if (!user) {
             return NextResponse.json(
